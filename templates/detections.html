@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title> im_bot </title>
+{% endblock %}
+
+{% block body %}
+    <div class="det_prev">
+        {% for i in pass_range %}
+            <form method="post" class="det_form">
+                <img src="data:image/png;base64, {{ pass_files[i]['obj'] }}" class="img_det_prev">
+                <p>{{pass_meta[i]['obj']}}</p>
+                <input type="hidden" name = "index" value="{{i}}"></p>
+                <input type="submit" name = "action_btn" value="Remove Image">
+            </form>
+        {% endfor %}
+    </div>
+    <form method="post" id="det_form_act">
+        <input type="submit" name = "action_btn" value = "Add Manually">
+        <input type="submit" name = "action_btn" value = "Download">
+    </form>
+{% endblock%}

@@ -1,0 +1,106 @@
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+
+html {
+    height: 100%;
+}
+
+
+.crop-rect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    border-color: black;
+    border-style: solid;
+}
+
+
+.dev_sel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    border-color: black;
+    border-style: solid;
+}
+
+
+.man_img {
+    user-select: none;
+    display: block;
+    /* width: 653.23px;
+    height: 900px; */
+    margin-bottom: 5px;
+}
+
+
+.det_prev {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 10px;
+}
+
+
+.det_form {
+    margin: 5px;
+}
+
+
+#det_form_act{
+    margin: 5px;
+}
+
+
+.manual_div {
+    /* width: 800px;
+    height: 1100px; */
+    justify-content: center;
+    align-items: center;
+}
+
+.form_man {
+    justify-content: center;
+    align-items: center;
+}
+
+#prev_btn {
+    margin-right: 10px;
+}
+
+#conf_btn {
+    margin-right: 10px;
+}
+
+.img_det_prev {
+    width: 362.9px;
+    height: 500px;
+}
+/* div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 10px;
+} */
+
+/* .manual_div {
+    display: flex;
+    justify-content: center;
+} */
+
+/* img {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 10px;
+} */

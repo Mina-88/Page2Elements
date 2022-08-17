@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title> im_bot </title>
+{% endblock %}
+
+{% block body%}
+<div class="content">
+    <div class="form">
+        <form id = 'up_im' method="post" enctype="multipart/form-data">
+            <label for = 'up_img'> Upload your image(s) here:</label>
+            <input type="file" name="file" id = 'up_img' multiple/>
+            <input type="submit" class="upload_btn" value = "Upload Image">
+        </form>
+    </div>
+</div>
+{% endblock%}
