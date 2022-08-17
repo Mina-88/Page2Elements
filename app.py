@@ -252,21 +252,16 @@ def detections():
     # ocr_page = ocrPage(images)
     ndarray_to_b64(result_cv)
     if request.method == 'POST':
-        btn_det = request.form['action_btn']
-        if btn_det == 'Download':
-            return redirect(url_for('download'))
-        elif btn_det == 'Add Manually':
-            return redirect('/manual_detections')
-        elif btn_det == 'Remove Image':
-            image_index = int(request.form['index'])
-            del det_co[result_en[image_index]['page']][result_en[image_index]['index']]
-            del result_en[image_index]
-            del result_meta[image_index]
-            del result_cv[image_index]
-            for i in range(image_index, len(result_en)):
-                result_cv[i]["index"] -= 1
-                result_en[i]["index"] -= 1
-                result_meta[i]["index"] -= 1
+        image_index = int(request.get_json())
+        print(image_index)
+        del det_co[result_en[image_index]['page']][result_en[image_index]['index']]
+        del result_en[image_index]
+        del result_meta[image_index]
+        del result_cv[image_index]
+        for i in range(image_index, len(result_en)):
+            result_cv[i]["index"] -= 1
+            result_en[i]["index"] -= 1
+            result_meta[i]["index"] -= 1
     return render_template('detections.html', pass_files=result_en, pass_meta=result_meta, pass_range = range(len(result_en)))
 
 

@@ -162,6 +162,10 @@ function down_red() {
   window.location.href = "/download";
 }
 
+function man_red() {
+  window.location.href = "/manumanual_detections"
+}
+
 function det_red() {
   window.location.href = "/detections";
 }
@@ -200,4 +204,13 @@ function send_man_data() {
 function rst_det_prev() {
   rst_det = document.querySelectorAll(".det_rect");
   rst_det.forEach(det => {det.remove();});
+}
+
+function remove_image(index) {
+  $.ajax({
+    url:"/detections",
+    type:"POST",
+    contentType: "application/json",
+    data: JSON.stringify(index), 
+    success:function(response){ document.write(response); document.close();}});
 }

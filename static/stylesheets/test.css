@@ -81,8 +81,8 @@ html {
 }
 
 .img_det_prev {
-    width: 362.9px;
-    height: 500px;
+    max-width: 85vw;
+    max-height: 500px;
 }
 
 div#manual_anchor
@@ -99,4 +99,23 @@ div#manual_anchor
 
 .det_rect {
     user-select: none;
+}
+
+#upload_div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+#up_im {
+    width: 40%;
+    height: 40%;
+}
+
+.btn_exp {
+    width: 130px;
+    height: 45px;
 }

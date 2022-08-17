@@ -10,13 +10,12 @@
             <form method="post" class="det_form">
                 <img src="data:image/png;base64, {{ pass_files[i]['obj'] }}" class="img_det_prev">
                 <p>{{pass_meta[i]['obj']}}</p>
-                <input type="hidden" name = "index" value="{{i}}"></p>
-                <input type="submit" name = "action_btn" value="Remove Image">
+                <input type="button" class="btn_exp" name = "action_btn" value="Remove Image" onclick="remove_image('{{i}}')">
             </form>
         {% endfor %}
     </div>
     <form method="post" id="det_form_act">
-        <input type="submit" name = "action_btn" value = "Add Manually">
-        <input type="submit" name = "action_btn" value = "Download">
+        <input type="button" class="btn_exp" name = "action_btn" value = "Add Manually" onclick="man_red()">
+        <input type="button" class="btn_exp" name = "action_btn" value = "Download" onclick="down_red()">
     </form>
 {% endblock%}
