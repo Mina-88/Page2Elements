@@ -209,9 +209,9 @@ def getImgCap():
 app = Flask(__name__, static_folder="static")
 app.secret_key = "super secret key"
 ALLOWED_EXTENSIONS = {'jpg', 'png', 'jpeg'}
-UPLOAD_FOLDER = "/home/ahmed_fathi/PycharmProjects/lib_bot/static"
+UPLOAD_FOLDER = "/home/ahmed_fathi/PycharmProjects/lib_bot/Page2Elements/static"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-download_folder = "/home/ahmed_fathi/PycharmProjects/lib_bot/download"
+download_folder = "/home/ahmed_fathi/PycharmProjects/lib_bot/Page2Elements/download"
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -321,10 +321,11 @@ def manual():
         if (int(manual_coor[0]['sel']) == 1):
             for i in manual_coor:
                 #extracting the image
-                x_1 = int(float(i['left'][:len(i['left']) - 2]))
-                x_2 = int(float(i['right'][:len(i['right']) - 2]))
-                y_1 = int(float(i['top'][:len(i['top']) - 2]))
-                y_2 = int(float(i['bottom'][:len(i['bottom']) - 2]))
+                print(i['ratio_w'], i['ratio_h'])
+                x_1 = int(float(i['left'][:len(i['left']) - 2])  / i['ratio_w'])
+                x_2 = int(float(i['right'][:len(i['right']) - 2])/ i['ratio_w'])
+                y_1 = int(float(i['top'][:len(i['top']) - 2]) / i['ratio_h'])
+                y_2 = int(float(i['bottom'][:len(i['bottom']) - 2]) / i['ratio_h'])
                 index_manual = int(i['index'])
                 curr_crop_img = images[index_manual][y_1:y_2, x_1:x_2]
                 

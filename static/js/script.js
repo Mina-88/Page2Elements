@@ -1,29 +1,37 @@
 function getSelectionRectNode() {
-    return document.querySelector(".crop-rect");
+    return document.getElementById("crop-rect");
 }
 
 function showSelectionRectangle(selection) {
     var rect = getSelectionRectNode();
-    rect.style.left = `${selection.left + window.scrollX}px`;
-    rect.style.top = `${selection.top + window.scrollY}px`;
-    rect.style.width = `${selection.right - selection.left}px`;
-    rect.style.height = `${selection.bottom - selection.top}px`;
+    var img = document.getElementById("img_man")
+    var reference = document.getElementById("manual_detection_div").getBoundingClientRect()
+    var ref_top = parseInt(parseFloat(reference.top));
+    var ref_left = parseInt(parseFloat(reference.left));
+    rect.style.left = `${selection.left -ref_left}px`;
+    rect.style.top = `${selection.top - ref_top}px`;
+    rect.style.width = `${(selection.right - selection.left)}px`;
+    rect.style.height = `${(selection.bottom - selection.top)}px`;
+    rect.style.position = "absolute";
     rect.style.opacity = 0.5;
 }
 
 function appendSelectionRectangle(selection) {
     var rect_div = document.createElement("div");
+    var reference = document.getElementById("manual_detection_div").getBoundingClientRect()
+    var ref_top = parseInt(parseFloat(reference.top));
+    var ref_left = parseInt(parseFloat(reference.left));
     rect_div.className = "div_sel"
-    rect_div.style.top = `${selection.top + window.scrollY}px`;
+    rect_div.style.top = `${selection.top + window.scrollY - ref_top}px`;
     rect_div.style.width = `${selection.right - selection.left}px`;
     rect_div.style.height = `${selection.bottom - selection.top}px`;
-    rect_div.style.left = `${selection.left + window.scrollX}px`;
-    rect_div.style.right = `${selection.right + window.scrollX}px`;  
-    rect_div.style.bottom = `${selection.bottom + window.scrollY}px`;  
+    rect_div.style.left = `${selection.left + window.scrollX - ref_left}px`;
+    rect_div.style.right = `${selection.right + window.scrollX - ref_left}px`;  
+    rect_div.style.bottom = `${selection.bottom + window.scrollY - ref_top}px`;  
     rect_div.style.borderStyle = "solid";
     rect_div.style.borderColor = "black";
     rect_div.style.position = "absolute";
-    document.querySelector("#form_man").appendChild(rect_div);
+    document.querySelector("#manual_detection_div").appendChild(rect_div);
 }
 
 function resetSelectionRectangle() {
@@ -82,17 +90,16 @@ function initEventHandlers() {
   
     function onMouseUp(e) {
       isMouseDown = false;
-      console.log(selectionRectangle);
       appendSelectionRectangle(selectionRectangle);
       resetSelectionRectangle();
-      document.removeEventListener("mousedown", onMouseDown);
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
+      document.getElementById("manual_detection_div").removeEventListener("mousemove", onMouseMove);
+      document.getElementById("manual_detection_div").removeEventListener("mousedown", onMouseDown);
+      document.getElementById("manual_detection_div").removeEventListener("mouseup", onMouseUp);
     }
   
-    document.addEventListener("mousedown", onMouseDown);
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
+    document.getElementById("manual_detection_div").addEventListener("mousedown", onMouseDown);
+    document.getElementById("manual_detection_div").addEventListener("mousemove", onMouseMove);
+    document.getElementById("manual_detection_div").addEventListener("mouseup", onMouseUp);
 }
 
 function init() 
@@ -165,7 +172,10 @@ function send_man_data() {
   if (test.length != 0) {
     var js_sel = [];
     var temp_json = {};
-    test.forEach(t => { temp_json = {"top":t.style.top, "left":t.style.left, "right":t.style.right, "bottom":t.style.bottom, "index":index_hid, "sel":1};
+    var img = document.getElementById("img_man")
+    var width_ratio = img.clientWidth / img.naturalWidth;
+    var height_ratio = img.clientHeight / img.naturalHeight;
+    test.forEach(t => { temp_json = {"top":t.style.top, "left":t.style.left, "right":t.style.right, "bottom":t.style.bottom, "index":index_hid, "sel":1, "ratio_w": width_ratio, "ratio_h": height_ratio};
                         js_sel.push(temp_json); })
     $.ajax({
       url:"/manual_detections",
