@@ -209,9 +209,9 @@ def getImgCap():
 app = Flask(__name__, static_folder="static")
 app.secret_key = "super secret key"
 ALLOWED_EXTENSIONS = {'jpg', 'png', 'jpeg'}
-UPLOAD_FOLDER = "/home/ahmed_fathi/PycharmProjects/lib_bot/Page2Elements/static"
+UPLOAD_FOLDER = "/home/ahmed_fathi/P2E/Page2Elements/static"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-download_folder = "/home/ahmed_fathi/PycharmProjects/lib_bot/Page2Elements/download"
+download_folder = "/home/ahmed_fathi/P2E/Page2Elements/download"
 
 def allowed_file(filename):
     return '.' in filename and \

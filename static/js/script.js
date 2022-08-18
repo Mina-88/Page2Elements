@@ -163,7 +163,7 @@ function down_red() {
 }
 
 function man_red() {
-  window.location.href = "/manumanual_detections"
+  window.location.href = "/manual_detections"
 }
 
 function det_red() {
