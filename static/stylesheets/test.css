@@ -38,6 +38,7 @@ div#meta_anchor
     flex-flow: column;
     justify-content: center;
     align-items: center;
+    max-height: 100vh;
 }
 
 #meta_div {
@@ -52,6 +53,15 @@ div#meta_anchor
     margin-bottom: 5px;
     height: 100%;
     width: 100%;
+}
+
+#meta_input {
+    display: flexbox;
+    flex-flow: row;
+}
+
+.label_meta {
+    margin-left: 10px;
 }
 
 
@@ -124,6 +134,12 @@ div#manual_anchor
 }
 
 #btn_div {
+    display: flex;
+    flex-flow: row;
+    margin: 10px;
+}
+
+.mini_btn_div {
     margin: 10px;
 }
 

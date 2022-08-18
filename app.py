@@ -32,6 +32,7 @@ json_conv = []
 det_co = {}
 global manual_coor
 captions = []
+session = 0
 
 def clear_lists():
     image_path.clear()
@@ -220,6 +221,8 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_image():
+    global session
+    session = 0
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
@@ -240,7 +243,6 @@ def upload_image():
                 up_count += 1
         if up_count == len(files):
             get_page_metadata()
-            # create_detections()
             return redirect(url_for('metadata'))
         if 0 < up_count < len(files):
             return redirect(request.url)
@@ -249,6 +251,10 @@ def upload_image():
 
 @app.route('/detections', methods=['GET', 'POST'])
 def detections():
+    global session
+    if session == 0:
+        create_detections()
+        session = 1
     # ocr_page = ocrPage(images)
     ndarray_to_b64(result_cv)
     if request.method == 'POST':
@@ -316,7 +322,6 @@ def manual():
         if (int(manual_coor[0]['sel']) == 1):
             for i in manual_coor:
                 #extracting the image
-                print(i['ratio_w'], i['ratio_h'])
                 x_1 = int(float(i['left'][:len(i['left']) - 2])  / i['ratio_w'])
                 x_2 = int(float(i['right'][:len(i['right']) - 2])/ i['ratio_w'])
                 y_1 = int(float(i['top'][:len(i['top']) - 2]) / i['ratio_h'])

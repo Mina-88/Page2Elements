@@ -19,13 +19,29 @@
             {% endfor %}
         </div>
         <p id="metadata_p">{{meta_data[index_meta]}}</p>
+        <form hidden id="meta_input">
+            <label for="p_name" class="label_meta">Name </label>
+            <input id="p_name" type="text">
+            <label for="p_iss_date" class="label_meta">Issue Date </label>
+            <input id="p_iss_date" type="text">
+            <label for="p_iss" class="label_meta">Issue </label>
+            <input id="p_iss" type="text">
+            <label for="p_num" class="label_meta">Page Number </label>
+            <input id="p_num" type="text">            
+        </form>
         <div id="btn_div">
-            <input type="button" class="btn_exp" name = "manual_btn" value = "Next Page" onclick='next_page_meta(pages_meta)'>
-            <input type="button" class="btn_exp" name = "manual_btn" value = "Previous Page" onclick='prev_page_meta(pages_meta)'>
-            <input type="button" class="btn_exp" name = "manual_btn" value = "Modify/Insert" onclick="insert_meta()">
-            <input type="button" class="btn_exp" name = "manual_btn" value = "Reset" onclick="reset_btn()">
-            <input type="button" class="btn_exp" name = "manual_btn" value = "New Session" onclick="up_red()">
-            <input type="button" class="btn_exp" name = "manual_btn" value = "Show Detections" onclick="det_red()">
+            <div class="mini_btn_div">
+                <input type="button" class="btn_exp" value = "Previous Page" onclick='prev_page_meta(pages_meta)'>
+                <input type="button" class="btn_exp" value = "Next Page" onclick='next_page_meta(pages_meta)'>
+            </div>
+            <div class="mini_btn_div">
+                <input type="button" class="btn_exp" value = "Reset" onclick="reset_meta()">
+                <input type="button" class="btn_exp" value = "Edit" onclick="insert_meta()">
+            </div>
+            <div class="mini_btn_div">
+                <input type="button" class="btn_exp" value = "New Session" onclick="up_red()">
+                <input type="button" class="btn_exp" value = "Show Detections" onclick="det_red()">
+            </div>
         </div>
     </div>
 {% endblock%}

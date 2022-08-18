@@ -48,6 +48,18 @@ function send_meta() {
     success:function(response){ document.write(response); document.close();}});
 }  
 
+function insert_meta() {
+  reset_meta();
+  var input = document.getElementById("meta_input");
+  input.setAttribute("hidden", "false");
+  input.removeAttribute("hidden");
+}
+
+function reset_meta() {
+  var input = document.getElementById("meta_input");
+  input.reset();
+  input.setAttribute("hidden", "true");
+}
 // Detections Page
 function remove_image(index) {
   $.ajax({
