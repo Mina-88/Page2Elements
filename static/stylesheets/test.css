@@ -12,8 +12,18 @@ html {
 .btn_exp {
     width: 130px;
     height: 45px;
+    margin: 5px;
 }
 
+.btn_div {
+    display: flex;
+    flex-flow: row;
+    margin: 10px;
+}
+
+.mini_btn_div {
+    margin: 10px;
+}
 
 /* Upload Page */
 #upload_div {
@@ -66,15 +76,27 @@ div#meta_anchor
 
 
 /* Detections Page */
-.det_prev {
+#detections_content {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#det_prev {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
     margin: 10px;
 }
 
-.det_form {
-    margin: 5px;
+.det_container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    margin: 15px;
 }
 
 .img_det_prev {
@@ -107,8 +129,6 @@ div#meta_anchor
 .man_img {
     user-select: none;
     display: block;
-    /* width: 653.23px;
-    height: 900px; */
     margin-bottom: 5px;
     height: 100%;
     width: 100%;
@@ -131,16 +151,6 @@ div#manual_anchor
     flex-flow: column;
     justify-content: center;
     align-items: center;
-}
-
-#btn_div {
-    display: flex;
-    flex-flow: row;
-    margin: 10px;
-}
-
-.mini_btn_div {
-    margin: 10px;
 }
 
 .det_rect {

@@ -5,17 +5,20 @@
 {% endblock %}
 
 {% block body %}
-    <div class="det_prev">
-        {% for i in pass_range %}
-            <form method="post" class="det_form">
-                <img src="data:image/png;base64, {{ pass_files[i]['obj'] }}" class="img_det_prev">
-                <p>{{pass_meta[i]['obj']}}</p>
-                <input type="button" class="btn_exp" name = "action_btn" value="Remove Image" onclick="remove_image('{{i}}')">
-            </form>
-        {% endfor %}
+    <div id="detections_content">
+        <div id="det_prev">
+            {% for i in pass_range %}
+                <div method="post" class="det_container">
+                    <img src="data:image/png;base64, {{ pass_files[i]['obj'] }}" class="img_det_prev">
+                    <p>{{pass_meta[i]['obj']}}</p>
+                    <input type="button" class="btn_exp" name = "action_btn" value="Remove Image" onclick="remove_image('{{i}}')">
+                </div>
+            {% endfor %}
+        </div>
+        <div class="btn_div">
+            <input type="button" class="btn_exp" value = "Add Manually" onclick="man_red()">
+            <input type="button" class="btn_exp" value = "Download" onclick="down_red()">
+        </div>
     </div>
-    <form method="post" id="det_form_act">
-        <input type="button" class="btn_exp" name = "action_btn" value = "Add Manually" onclick="man_red()">
-        <input type="button" class="btn_exp" name = "action_btn" value = "Download" onclick="down_red()">
-    </form>
+    
 {% endblock%}
