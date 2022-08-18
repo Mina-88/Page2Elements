@@ -21,13 +21,14 @@
         <p id="metadata_p">{{meta_data[index_meta]}}</p>
         <form hidden id="meta_input">
             <label for="p_name" class="label_meta">Name </label>
-            <input id="p_name" type="text">
+            <input id="p_name" name="p_name" type="text">
             <label for="p_iss_date" class="label_meta">Issue Date </label>
-            <input id="p_iss_date" type="text">
+            <input id="p_iss_date" name="p_iss_date" type="text">
             <label for="p_iss" class="label_meta">Issue </label>
-            <input id="p_iss" type="text">
+            <input id="p_iss" name="p_iss" type="text">
             <label for="p_num" class="label_meta">Page Number </label>
-            <input id="p_num" type="text">            
+            <input id="p_num" name="p_num" type="text">      
+            <input id="add_meta" type="button" value="Save Changes" onclick="send_meta()">      
         </form>
         <div id="btn_div">
             <div class="mini_btn_div">

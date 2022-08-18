@@ -38,8 +38,20 @@ function prev_page_meta(pages)
 function send_meta() {
   var index_meta = document.getElementById("pg_ind_meta").getAttribute("value");
   var js_sel = [];
-  var temp_json = {"name":0, "issue_date":0, "issue":0, "page":0, "index":index_meta, "write":0};
-  js_sel.push(temp_json);
+  var data = $('#meta_input').serializeArray()
+  var count_empty = 0;
+  data.forEach(function(element) {if (element.value.length == 0) count_empty += 1;})
+  if (count_empty == 4) {
+    var temp_json = {"name":0, "issue_date":0, "issue":0, "page":0, "index":index_meta, "write":0};
+    js_sel.push(temp_json);
+    count_empty = 0;
+  }
+  else {
+    data = $('#meta_input').serializeArray().reduce(function(obj, item) { obj[item.name] = item.value; return obj}, {});
+    console.log(data)
+    var temp_json = {"name":data['p_name'], "issue_date":data['p_iss_date'], "issue":data['p_iss'], "page":data['p_num'], "index":index_meta, "write":1};
+    js_sel.push(temp_json);
+  }
   $.ajax({
     url:"/metadata",
     type:"POST",
@@ -60,6 +72,7 @@ function reset_meta() {
   input.reset();
   input.setAttribute("hidden", "true");
 }
+
 // Detections Page
 function remove_image(index) {
   $.ajax({
