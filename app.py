@@ -348,13 +348,10 @@ def metadata():
         meta_request = request.get_json()
         index_meta = int(meta_request[0]['index'])
         if (int(meta_request[0]['write']) == 1):
-            print(meta_request, "request")
-            print(meta_data[index_meta], "before")
             meta_data[index_meta]['name'] = meta_request[0]['name'] 
             meta_data[index_meta]['issue_date'] = meta_request[0]['issue_date'] 
             meta_data[index_meta]['issue'] = meta_request[0]['issue'] 
             meta_data[index_meta]['page'] = meta_request[0]['page']
-            print(meta_data[index_meta], "After")
     return render_template('meta_data.html', page_uri=page_uri, rng_img = range(len(page_name)), index_meta = index_meta, meta_data=meta_data)
 
 
