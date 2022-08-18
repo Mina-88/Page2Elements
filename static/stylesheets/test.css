@@ -1,106 +1,21 @@
+/* General CSS */
 body {
     margin: 0;
     padding: 0;
     min-height: 100%;
 }
 
-
 html {
     height: 100%;
 }
 
-
-#crop-rect {
-    position: fixed;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    border-color: black;
-    border-style: solid;
+.btn_exp {
+    width: 130px;
+    height: 45px;
 }
 
 
-.dev_sel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    border-color: black;
-    border-style: solid;
-}
-
-
-.man_img {
-    user-select: none;
-    display: block;
-    /* width: 653.23px;
-    height: 900px; */
-    margin-bottom: 5px;
-    height: 100%;
-    width: 100%;
-}
-
-
-.det_prev {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin: 10px;
-}
-
-
-.det_form {
-    margin: 5px;
-}
-
-
-#det_form_act{
-    margin: 5px;
-}
-
-
-.manual_div {
-    height: 850px;
-    width: 600px;
-    position: relative;
-}
-
-.form_man {
-    justify-content: center;
-    align-items: center;
-}
-
-#prev_btn {
-    margin-right: 10px;
-}
-
-#conf_btn {
-    margin-right: 10px;
-}
-
-.img_det_prev {
-    max-width: 85vw;
-    max-height: 500px;
-}
-
-div#manual_anchor
-{
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#btn_div {
-    margin: 15px;
-}
-
-.det_rect {
-    user-select: none;
-}
-
+/* Upload Page */
 #upload_div {
     display: flex;
     align-items: center;
@@ -115,7 +30,105 @@ div#manual_anchor
     height: 40%;
 }
 
-.btn_exp {
-    width: 130px;
-    height: 45px;
+
+/* Metadata Page */
+div#meta_anchor
+{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
 }
+
+#meta_div {
+    height: 820px;
+    width: 600px;
+    position: relative;
+}
+
+#meta_img {
+    user-select: none;
+    display: block;
+    margin-bottom: 5px;
+    height: 100%;
+    width: 100%;
+}
+
+
+/* Detections Page */
+.det_prev {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 10px;
+}
+
+.det_form {
+    margin: 5px;
+}
+
+.img_det_prev {
+    max-width: 85vw;
+    max-height: 500px;
+}
+
+
+/* Manual Detections Page */
+#crop-rect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    border-color: black;
+    border-style: solid;
+}
+
+.dev_sel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    border-color: black;
+    border-style: solid;
+}
+
+.man_img {
+    user-select: none;
+    display: block;
+    /* width: 653.23px;
+    height: 900px; */
+    margin-bottom: 5px;
+    height: 100%;
+    width: 100%;
+}
+
+.manual_div {
+    height: 850px;
+    width: 600px;
+    position: relative;
+}
+
+.form_man {
+    justify-content: center;
+    align-items: center;
+}
+
+div#manual_anchor
+{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#btn_div {
+    margin: 10px;
+}
+
+.det_rect {
+    user-select: none;
+}
+
+

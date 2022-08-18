@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import Flask, flash, render_template, request
 from flask import redirect, send_from_directory, url_for, send_file
 from werkzeug.utils import secure_filename
@@ -156,7 +157,6 @@ def get_detections_images(coordinates, no_page_detections):
         page_detections_pointer += 1
 
 
-
 def create_detections():  
     model = lp.Detectron2LayoutModel("lp://NewspaperNavigator/faster_rcnn_R_50_FPN_3x/config",
                                 label_map={0: "Photograph", 1: "Illustration", 2: "Map",
@@ -240,8 +240,8 @@ def upload_image():
                 up_count += 1
         if up_count == len(files):
             get_page_metadata()
-            create_detections()
-            return redirect(url_for('detections'))
+            # create_detections()
+            return redirect(url_for('metadata'))
         if 0 < up_count < len(files):
             return redirect(request.url)
     return render_template('upload.html')
@@ -333,6 +333,20 @@ def manual():
             return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], sv_ind = index_manual)
     return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], sv_ind = index_manual)
 
+
+@app.route('/metadata', methods=['POST', 'GET'])
+def metadata():
+    index_meta = 0
+    for i in page_name:
+        page_uri.append(url_for('static', filename=i))       
+    meta_request = request.get_json()
+    if request.method == 'POST':
+        if (int(meta_request[0]['write']) == 1):
+            return 
+        else:
+            index_meta = int(meta_request[0]['index'])
+            return render_template('meta_data.html', page_uri=page_uri, rng_img = range(len(page_name)), index_meta = index_meta, meta_data=meta_data)
+    return render_template('meta_data.html', page_uri=page_uri, rng_img = range(len(page_name)), index_meta = index_meta, meta_data=meta_data)
 
 
 if __name__ == "__main__":

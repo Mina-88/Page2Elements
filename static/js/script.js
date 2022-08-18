@@ -1,3 +1,65 @@
+// Metadata Page
+function next_page_meta(pages)
+{
+  var input = document.getElementById("pg_ind_meta");
+  var index = parseInt(input.value);
+  var rng = input.dataset.range;
+  index += 1;
+  var img = document.getElementById("meta_img");
+  if (index > rng - 1) {
+    img.src = pages[0];
+    document.getElementById("pg_ind_meta").value = 0;
+  }
+  else {
+    img.src = pages[index];
+    document.getElementById("pg_ind_meta").value = index;
+  }
+  send_meta();
+}
+
+function prev_page_meta(pages)
+{
+  var input = document.getElementById("pg_ind_meta");
+  var index = parseInt(input.value);
+  var rng = input.dataset.range;
+  index -= 1;
+  var img = document.getElementById("meta_img");
+  if (index < 0) {
+    img.src = pages[rng - 1];
+    document.getElementById("pg_ind_meta").value = (rng - 1);
+  }
+  else {
+    img.src = pages[index];
+    document.getElementById("pg_ind_meta").value = index;
+  }
+  send_meta();
+}
+
+function send_meta() {
+  var index_meta = document.getElementById("pg_ind_meta").getAttribute("value");
+  var js_sel = [];
+  var temp_json = {"name":0, "issue_date":0, "issue":0, "page":0, "index":index_meta, "write":0};
+  js_sel.push(temp_json);
+  $.ajax({
+    url:"/metadata",
+    type:"POST",
+    contentType: "application/json",
+    data: JSON.stringify(js_sel),
+    success:function(response){ document.write(response); document.close();}});
+}  
+
+// Detections Page
+function remove_image(index) {
+  $.ajax({
+    url:"/detections",
+    type:"POST",
+    contentType: "application/json",
+    data: JSON.stringify(index), 
+    success:function(response){ document.write(response); document.close();}});
+}
+
+
+// Manual Detections Page
 function getSelectionRectNode() {
     return document.getElementById("crop-rect");
 }
@@ -107,7 +169,7 @@ function init()
     initEventHandlers();
 }
   
-function next_page(pages)
+function next_page_man(pages)
 {
   var div_sel = document.querySelectorAll(".div_sel");
   div_sel.forEach(sel => { sel.remove()  });
@@ -127,7 +189,7 @@ function next_page(pages)
   send_man_data();
 }
 
-function prev_page(pages)
+function prev_page_man(pages)
 {
   var div_sel = document.querySelectorAll(".div_sel");
   div_sel.forEach(sel => { sel.remove()  });
@@ -147,27 +209,15 @@ function prev_page(pages)
   send_man_data();
 }
 
-function reset_btn()
+function reset_man()
 {
   var div_sel = document.querySelectorAll(".div_sel");
   div_sel.forEach(sel => { sel.remove()  });
 }
 
-function confirm_btn() 
+function confirm_man() 
 {
   send_man_data();
-}
-
-function down_red() {
-  window.location.href = "/download";
-}
-
-function man_red() {
-  window.location.href = "/manual_detections"
-}
-
-function det_red() {
-  window.location.href = "/detections";
 }
 
 function send_man_data() {
@@ -206,11 +256,16 @@ function rst_det_prev() {
   rst_det.forEach(det => {det.remove();});
 }
 
-function remove_image(index) {
-  $.ajax({
-    url:"/detections",
-    type:"POST",
-    contentType: "application/json",
-    data: JSON.stringify(index), 
-    success:function(response){ document.write(response); document.close();}});
+// General Functions
+function down_red() {
+  window.location.href = "/download";
 }
+
+function man_red() {
+  window.location.href = "/manual_detections"
+}
+
+function det_red() {
+  window.location.href = "/detections";
+}
+

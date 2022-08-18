@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title> Page2Elements | Metadata </title>
+{% endblock %}
+
+{% block body %}
+    <div id="meta_anchor">
+        <div id="meta_div">
+            <img src="{{page_uri[index_meta]}}" id="meta_img" draggable="false" class="img_meta">
+            <input type="hidden" name="hid_ind"id="pg_ind_meta" value="{{index_meta}}" data-range="{{rng_img | length}}">
+            <script>
+                var pages_meta = [];
+            </script>
+            {% for i in rng_img%}
+                <script>
+                    pages_meta.push("{{page_uri[i]}}");
+                </script>
+            {% endfor %}
+        </div>
+        <p id="metadata_p">{{meta_data[index_meta]}}</p>
+        <div id="btn_div">
+            <input type="button" class="btn_exp" name = "manual_btn" value = "Next Page" onclick='next_page_meta(pages_meta)'>
+            <input type="button" class="btn_exp" name = "manual_btn" value = "Previous Page" onclick='prev_page_meta(pages_meta)'>
+            <input type="button" class="btn_exp" name = "manual_btn" value = "Modify/Insert" onclick="insert_meta()">
+            <input type="button" class="btn_exp" name = "manual_btn" value = "Reset" onclick="reset_btn()">
+            <input type="button" class="btn_exp" name = "manual_btn" value = "New Session" onclick="up_red()">
+            <input type="button" class="btn_exp" name = "manual_btn" value = "Show Detections" onclick="det_red()">
+        </div>
+    </div>
+{% endblock%}

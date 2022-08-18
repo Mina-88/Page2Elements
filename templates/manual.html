@@ -7,7 +7,7 @@
 {% block body %}
     <div id="manual_anchor">
         <div id="manual_detection_div" class="manual_div">
-            <img src="{{img_src[sv_ind]}}" id="img_man" draggable="false" class="man_img">
+            <img src="{{page_uri[sv_ind]}}" id="img_man" draggable="false" class="man_img">
             <input type="hidden" name="hid_ind"id="pg_ind" value="{{sv_ind}}" data-range="{{rng_img | length}}">
             <div id="crop-rect"></div>
         {% for j in range(0, det_co | length) %}
@@ -35,16 +35,16 @@
             </script>
             {% for i in rng_img%}
                 <script>
-                    pages.push("{{img_src[i]}}");
+                    pages.push("{{page_uri[i]}}");
                 </script>
             {% endfor %}
         </div>
         <div id="btn_div">
-            <input type="button" class="btn_exp" name = "manual_btn" value = "Next Page" onclick='next_page(pages)'>
-            <input type="button" class="btn_exp" name = "manual_btn" value = "Previous Page" onclick='prev_page(pages)' id="prev_btn">
+            <input type="button" class="btn_exp" name = "manual_btn" value = "Next Page" onclick='next_page_man(pages)'>
+            <input type="button" class="btn_exp" name = "manual_btn" value = "Previous Page" onclick='prev_page_man(pages)' id="prev_btn">
             <input type="button" class="btn_exp" name = "manual_btn" value = "Add New" onclick="init()">
-            <input type="button" class="btn_exp" name = "manual_btn" value = "Reset" onclick="reset_btn()">
-            <input type="button" class="btn_exp" name = "manual_btn" value = "Confirm" onclick="confirm_btn()" id="conf_btn">
+            <input type="button" class="btn_exp" name = "manual_btn" value = "Reset" onclick="reset_man()">
+            <input type="button" class="btn_exp" name = "manual_btn" value = "Confirm" onclick="confirm_man()" id="conf_btn">
             <input type="button" class="btn_exp" name = "manual_btn" value = "Go to Downloads" onclick="down_red()">
             <input type="button" class="btn_exp" name = "manual_btn" value = "Show Detections" onclick="det_red()">
         </div>
