@@ -12,7 +12,7 @@ html {
 .btn_exp {
     width: 130px;
     height: 35px;
-    /* margin: 5px; */
+    margin: 2px;
 }
 
 .btn_div {
@@ -157,4 +157,11 @@ div#manual_anchor
     user-select: none;
 }
 
+/* Downloads Page */
+.download-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+}
 

@@ -1,4 +1,6 @@
 from crypt import methods
+import imp
+from ossaudiodev import control_names
 from flask import Flask, flash, render_template, request
 from flask import redirect, send_from_directory, url_for, send_file
 from werkzeug.utils import secure_filename
@@ -14,6 +16,8 @@ import re
 from run import img_cap
 import easyocr
 import copy
+import pandas as pd
+import csv
 
 # Data Structure
 image_path = [] # input
@@ -129,8 +133,9 @@ def get_detections_images(coordinates, no_page_detections):
         curr_crop_img = images[pages_pointer][y_1:y_2, x_1:x_2]
         result_cv.append({"page": pages_pointer, "obj":curr_crop_img, "index":page_detections_pointer})
         temp_meta = copy.deepcopy(meta_data[pages_pointer])
+        temp_name = copy.deepcopy(page_name[pages_pointer])
         result_meta.append({"page": pages_pointer, "obj":temp_meta, "index":page_detections_pointer})
-        download_name.append({"page": pages_pointer, "obj":page_name[pages_pointer], "index":page_detections_pointer})
+        download_name.append({"page": pages_pointer, "obj":temp_name, "index":page_detections_pointer})
         page_detections_pointer += 1
 
 def create_detections():  
@@ -150,16 +155,16 @@ def ndarray_to_b64(ndarray):
         im_en = base64.b64encode(buffer).decode('utf-8') # encoding to b64 to be displayed in html
         result_en.append({"page": i['page'], "obj":im_en, "index":i['index']}) # objects to be passed to html using jinja2
 
-def save_ndImages():
-    count = 0
+def generate_download_name():
     for i in range(len(result_cv)):
-        os.chdir(download_folder) # changing currrent directory to the download folder[variable]
-        if(i != 0 and download_name[i]['obj'] != download_name[i-1]['obj']): # all images from same page are taken
-            count = 0
         split_name = download_name[i]['obj'].split('.') # splitting the name and the extension
-        result_name = split_name[0] + '_' + str(count) + '.' + split_name[1] # creating duplicate names
-        cv2.imwrite(result_name, result_cv[i]['obj']) # saving the image
-        count += 1
+        download_name[i]['obj'] = split_name[0] + '_' + str(download_name[i]['index']) + '.' + split_name[1] # creating duplicate names
+
+def save_ndImages():
+    generate_download_name()
+    os.chdir(download_folder) # changing currrent directory to the download folder[variable]
+    for i in range(len(download_name)):
+        cv2.imwrite(download_name[i]['obj'], result_cv[i]['obj']) # saving the image
 
 def getImgCap(image):
     imgCapRes = img_cap(image)
@@ -176,8 +181,50 @@ def reset_server():
             os.remove(i)
     os.chdir(download_folder)
     for j in download_name: 
-        if os.path.exists(j):
-            os.remove(j)
+        if os.path.exists(j['obj']):
+            os.remove(j['obj'])
+
+
+def download_images():
+    save_ndImages()
+    csv_exp = []
+    for i in range(len(result_cv)):
+        tmp_csv = {"image_name": download_name[i]['obj']}
+        tmp_csv = {**tmp_csv, **result_meta[i]['obj']}
+        csv_exp.append(tmp_csv)
+    data_frame = pd.DataFrame.from_dict(csv_exp)
+    data_frame.to_csv(r'page_2_elements_csv.csv', index=False, header=True)
+    stream = BytesIO()
+    with ZipFile(stream, 'w') as zf: # create a compressed file with all images
+        for page in page_name:
+            search_name = "%s*.%s" % (page.split('.')[0], page.split('.')[1]) # use wild card tokens to get all images of current session
+            for file in glob(os.path.join(download_folder, search_name)):
+                zf.write(file, os.path.basename(file))
+            zf.write('page_2_elements_csv.csv', os.path.basename('page_2_elements_csv.csv'))
+    stream.seek(0)
+    return send_file(
+        stream, 
+        as_attachment=True,
+        attachment_filename='P2E_images_csv.zip'
+    ) # sending the file to be downloaded
+
+def download_json():
+    for i in range(len(result_cv)):
+        tmp_dict = {} # create a dictionary similar to json
+        tmp_dict["image"] = result_en[i]['obj']
+        tmp_dict["name"] = result_meta[i]['obj']["name"]
+        tmp_dict["issue"] = result_meta[i]['obj']["issue"]
+        tmp_dict["issue_date"] = result_meta[i]['obj']["issue_date"]
+        tmp_dict["page"] = result_meta[i]['obj']["page"]
+        if "caption" in result_meta[i]['obj']:
+            tmp_dict["caption"] = result_meta[i]['obj']["caption"]                    
+        json_conv.append(tmp_dict)
+    download_json = json.dumps(json_conv) # from dictionary to json
+    os.chdir(download_folder)
+    json_download_name = "P2E_json.json" #naming the file
+    with open(json_download_name, "w") as outfile:
+        outfile.write(download_json) # saving json
+    return send_from_directory(download_folder, json_download_name, as_attachment=True) # send file to downloads
 
 # Flask app configuration
 app = Flask(__name__, static_folder="static")
@@ -195,7 +242,7 @@ def allowed_file(filename): # to avoid unallowed extensions
 def upload_image():
     global session
     session = 0 # resetting the session
-    reset_server()
+    # reset_server()
     if request.method == 'POST':
         if 'file' not in request.files: # no files are uploaded in the request
             flash('No file part')
@@ -270,36 +317,10 @@ def detections():
 @app.route('/download', methods=['GET', 'POST']) # downloads page
 def download():
     if request.method == 'POST':
-        if request.form['download'] == 'Images':
-            save_ndImages() # save all detections in the downloads directory
-            stream = BytesIO()
-            with ZipFile(stream, 'w') as zf: # create a compressed file with all images
-                for page in page_name:
-                    search_name = "%s*.%s" % (page.split('.')[0], page.split('.')[1]) # use wild card tokens to get all images of current session
-                    for file in glob(os.path.join(download_folder, search_name)):
-                        zf.write(file, os.path.basename(file))
-            stream.seek(0)
-            return send_file(
-                stream, 
-                as_attachment=True,
-                attachment_filename='lib_bot_download_images.zip'
-            ) # sending the file to be downloaded
-
+        if request.form['download'] == 'Images & CSV':
+            return download_images()
         elif request.form['download'] == 'JSON':
-            for i in range(len(result_cv)):
-                tmp_dict = {} # create a dictionary similar to json
-                tmp_dict["image"] = result_en[i]['obj']
-                tmp_dict["name"] = result_meta[i]['obj']["name"]
-                tmp_dict["issue"] = result_meta[i]['obj']["issue"]
-                tmp_dict["issue_date"] = result_meta[i]['obj']["issue_date"]
-                tmp_dict["page"] = result_meta[i]['obj']["page"]
-                json_conv.append(tmp_dict)
-            download_json = json.dumps(json_conv) # from dictionary to json
-            os.chdir(download_folder)
-            json_download_name = "lib_bot_download_json.json" #naming the file
-            with open(json_download_name, "w") as outfile:
-                outfile.write(download_json) # saving json
-            return send_from_directory(download_folder, json_download_name, as_attachment=True) # send file to downloads
+            return download_json()            
         elif request.form['download'] == "Start New":
             return redirect('/')
         else:
