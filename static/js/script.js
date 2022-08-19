@@ -75,12 +75,63 @@ function reset_meta() {
 
 // Detections Page
 function remove_image(index) {
-  $.ajax({
-    url:"/detections",
-    type:"POST",
-    contentType: "application/json",
-    data: JSON.stringify(index), 
-    success:function(response){ document.write(response); document.close();}});
+  send_det_data('remove_image', index);
+  hide_input(index);
+}
+
+function remove_caption(index) {
+  send_det_data('remove_caption', index);
+  hide_input(index);
+}
+
+function generate_caption(index) {
+  send_det_data('generate_caption', index);
+  hide_input(index);
+}
+
+function reset_input(index) {
+  var input = document.getElementById("cap_in_" + index);
+  input.value = "";
+}
+
+function view_input(index) {
+  var input = document.getElementById("cap_in_div_" + index);
+  input.setAttribute("hidden", "false");
+  input.removeAttribute("hidden");
+  reset_input(index);
+}
+
+function hide_input(index) {
+  var input = document.getElementById("cap_in_div_" + index);
+  input.setAttribute("hidden", "true")
+  reset_input(index);
+}
+
+function manual_caption(index) {
+  send_det_data('manual_caption', index);
+}
+
+function send_det_data(operation, index) {
+  var temp_json = {};
+  if (operation !== 'manual_caption') {
+    temp_json = {"operation": operation, "index": index};
+    $.ajax({
+      url:"/detections",
+      type:"POST",
+      contentType: "application/json",
+      data: JSON.stringify(temp_json), 
+      success:function(response){ document.write(response); document.close();}});
+  }
+  else {
+    var input = document.getElementById("cap_in_" + index).value;
+    temp_json = {"operation": operation, "index": index, "caption": input};
+    $.ajax({
+      url:"/detections",
+      type:"POST",
+      contentType: "application/json",
+      data: JSON.stringify(temp_json), 
+      success:function(response){ document.write(response); document.close();}});
+  }
 }
 
 

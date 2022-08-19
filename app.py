@@ -167,6 +167,16 @@ def getImgCap(image):
     # 3 captions for each image are created
     # They are in the form of a list
 
+def reset_server():
+    os.chdir(UPLOAD_FOLDER)
+    for i in page_name:
+        if os.path.exists(i):
+            os.remove(i)
+    os.chdir(download_folder)
+    for j in download_name: 
+        if os.path.exists(j):
+            os.remove(j)
+
 # Flask app configuration
 app = Flask(__name__, static_folder="static")
 app.secret_key = "super secret key"
@@ -183,6 +193,7 @@ def allowed_file(filename): # to avoid unallowed extensions
 def upload_image():
     global session
     session = 0 # resetting the session
+    reset_server()
     if request.method == 'POST':
         if 'file' not in request.files: # no files are uploaded in the request
             flash('No file part')
