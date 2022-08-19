@@ -13,6 +13,7 @@ import json
 import re
 from run import img_cap
 import easyocr
+import copy
 
 # Data Structure
 image_path = [] # input
@@ -127,7 +128,8 @@ def get_detections_images(coordinates, no_page_detections):
         det_co[pages_pointer].append(coordinates[i])
         curr_crop_img = images[pages_pointer][y_1:y_2, x_1:x_2]
         result_cv.append({"page": pages_pointer, "obj":curr_crop_img, "index":page_detections_pointer})
-        result_meta.append({"page": pages_pointer, "obj":meta_data[pages_pointer], "index":page_detections_pointer})
+        temp_meta = copy.deepcopy(meta_data[pages_pointer])
+        result_meta.append({"page": pages_pointer, "obj":temp_meta, "index":page_detections_pointer})
         download_name.append({"page": pages_pointer, "obj":page_name[pages_pointer], "index":page_detections_pointer})
         page_detections_pointer += 1
 
@@ -161,8 +163,8 @@ def save_ndImages():
 
 def getImgCap(image):
     imgCapRes = img_cap(image)
-    for i in imgCapRes:
-        del i[-5:-1]
+    for i in range(len(imgCapRes)):
+        imgCapRes[i] = imgCapRes[i].replace(" <end>", "")
     return imgCapRes
     # 3 captions for each image are created
     # They are in the form of a list
@@ -244,15 +246,24 @@ def detections():
     # ocr_page = ocrPage(images)
     ndarray_to_b64(result_cv) # encoding images to be passed to html
     if request.method == 'POST':
-        image_index = int(request.get_json())
-        del det_co[result_en[image_index]['page']][result_en[image_index]['index']]
-        del result_en[image_index]
-        del result_meta[image_index]
-        del result_cv[image_index]
-        for i in range(image_index, len(result_en)):
-            result_cv[i]["index"] -= 1
-            result_en[i]["index"] -= 1
-            result_meta[i]["index"] -= 1
+        request_data = request.get_json()
+        operation = request_data['operation']
+        image_index = int(request_data['index'])
+        if operation == 'remove_image':
+            del det_co[result_en[image_index]['page']][result_en[image_index]['index']]
+            del result_en[image_index]
+            del result_meta[image_index]
+            del result_cv[image_index]
+            for i in range(image_index, len(result_en)):
+                result_cv[i]["index"] -= 1
+                result_en[i]["index"] -= 1
+                result_meta[i]["index"] -= 1
+        elif operation == 'remove_caption':
+            result_meta[image_index]['obj']['caption'] = ""
+        elif operation == 'generate_caption':
+            result_meta[image_index]['obj']['caption'] = getImgCap(result_cv[image_index]['obj'])
+        elif operation == 'manual_caption':
+            result_meta[image_index]['obj']['caption'] = request_data['caption']           
     return render_template('detections.html', pass_files=result_en, pass_meta=result_meta, pass_range = range(len(result_en)))
 
 
