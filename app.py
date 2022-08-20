@@ -1,6 +1,8 @@
 from crypt import methods
 import imp
 from ossaudiodev import control_names
+import shutil
+from urllib.parse import urljoin, urlparse
 from flask import Flask, flash, render_template, request
 from flask import redirect, send_from_directory, url_for, send_file
 from werkzeug.utils import secure_filename
@@ -17,7 +19,6 @@ from run import img_cap
 import easyocr
 import copy
 import pandas as pd
-import csv
 
 # Data Structure
 image_path = [] # input
@@ -175,16 +176,13 @@ def getImgCap(image):
     # They are in the form of a list
 
 def reset_server():
-    os.chdir(UPLOAD_FOLDER)
-    for i in page_name:
-        if os.path.exists(i):
-            os.remove(i)
-    os.chdir(download_folder)
-    for j in download_name: 
-        if os.path.exists(j['obj']):
-            os.remove(j['obj'])
-
-
+    if os.path.exists(UPLOAD_FOLDER):
+        shutil.rmtree(UPLOAD_FOLDER)
+    if os.path.exists(download_folder):
+        shutil.rmtree(download_folder)
+    os.makedirs(UPLOAD_FOLDER)
+    os.makedirs(download_folder)
+    
 def download_images():
     save_ndImages()
     csv_exp = []
@@ -226,13 +224,23 @@ def download_json():
         outfile.write(download_json) # saving json
     return send_from_directory(download_folder, json_download_name, as_attachment=True) # send file to downloads
 
+def remove_image(image_index):
+    del det_co[result_en[image_index]['page']][result_en[image_index]['index']]
+    del result_en[image_index]
+    del result_meta[image_index]
+    del result_cv[image_index]
+    for i in range(image_index, len(result_en)):
+        result_cv[i]["index"] -= 1
+        result_en[i]["index"] -= 1
+        result_meta[i]["index"] -= 1
+
 # Flask app configuration
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__, static_folder="server/static", template_folder="server")
 app.secret_key = "super secret key"
 ALLOWED_EXTENSIONS = {'jpg', 'png', 'jpeg'}
-UPLOAD_FOLDER = "/home/ahmed_fathi/P2E/Page2Elements/static"
+UPLOAD_FOLDER = os.path.join(os.getcwd(), "server", "static", "uploads")
+download_folder = os.path.join(os.getcwd(), "server", "static", "downloads")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-download_folder = "/home/ahmed_fathi/P2E/Page2Elements/download"
 
 def allowed_file(filename): # to avoid unallowed extensions
     return '.' in filename and \
@@ -242,7 +250,7 @@ def allowed_file(filename): # to avoid unallowed extensions
 def upload_image():
     global session
     session = 0 # resetting the session
-    # reset_server()
+    reset_server()
     if request.method == 'POST':
         if 'file' not in request.files: # no files are uploaded in the request
             flash('No file part')
@@ -260,7 +268,7 @@ def upload_image():
                 f.save(cv_path)
                 image_path.append(cv_path)
                 page_name.append(file_name)
-                page_uri.append(url_for('static', filename=file_name))
+                page_uri.append(url_for('static', filename=('uploads/' + file_name)))
                 up_count += 1
         if up_count == len(files): # all images are uploaded
             get_page_metadata()
@@ -289,22 +297,14 @@ def detections():
     global session
     if session == 0: # to avoid redundancy, only at start of session
         create_detections()
-        session = 1
-    # ocr_page = ocrPage(images)
+        session = 1 #indicate session is already running
     ndarray_to_b64(result_cv) # encoding images to be passed to html
     if request.method == 'POST':
         request_data = request.get_json()
         operation = request_data['operation']
         image_index = int(request_data['index'])
         if operation == 'remove_image':
-            del det_co[result_en[image_index]['page']][result_en[image_index]['index']]
-            del result_en[image_index]
-            del result_meta[image_index]
-            del result_cv[image_index]
-            for i in range(image_index, len(result_en)):
-                result_cv[i]["index"] -= 1
-                result_en[i]["index"] -= 1
-                result_meta[i]["index"] -= 1
+            remove_image(image_index)
         elif operation == 'remove_caption':
             result_meta[image_index]['obj']['caption'] = ""
         elif operation == 'generate_caption':
@@ -321,10 +321,8 @@ def download():
             return download_images()
         elif request.form['download'] == 'JSON':
             return download_json()            
-        elif request.form['download'] == "Start New":
+        elif request.form['download'] == "Go to Uploads":
             return redirect('/')
-        else:
-            return render_template('download.html')
     return render_template('download.html')
 
 @app.route('/manual_detections', methods=['POST', 'GET']) # manual detections page
