@@ -48,7 +48,7 @@ div#meta_anchor
     flex-flow: column;
     justify-content: center;
     align-items: center;
-    max-height: 100vh;
+    /* max-height: 100vh; */
 }
 
 #meta_div {
@@ -74,6 +74,11 @@ div#meta_anchor
     margin-left: 10px;
 }
 
+.metadata_preview {
+    word-wrap: break-word;
+    width: 575px;
+    margin: 10px;
+}
 
 /* Detections Page */
 #detections_content {

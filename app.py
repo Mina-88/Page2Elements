@@ -141,6 +141,7 @@ def get_detections_images(coordinates, no_page_detections):
         curr_crop_img = images[pages_pointer][y_1:y_2, x_1:x_2]
         result_cv.append({"page": pages_pointer, "obj":curr_crop_img, "index":page_detections_pointer})
         temp_meta = copy.deepcopy(meta_data[pages_pointer])
+        temp_meta.pop('ocr', None)
         temp_name = copy.deepcopy(page_name[pages_pointer])
         result_meta.append({"page": pages_pointer, "obj":temp_meta, "index":page_detections_pointer})
         download_name.append({"page": pages_pointer, "obj":temp_name, "index":page_detections_pointer})
@@ -321,7 +322,9 @@ def detections():
         elif operation == 'generate_caption':
             result_meta[image_index]['obj']['caption'] = getImgCap(result_cv[image_index]['obj'])
         elif operation == 'manual_caption':
-            result_meta[image_index]['obj']['caption'] = request_data['caption']           
+            result_meta[image_index]['obj']['caption'] = request_data['caption']     
+        elif operation == 'ocr':
+            result_meta[image_index]['obj']['ocr'] = ocrPage(result_cv[image_index]['obj'])
     return render_template('detections.html', pass_files=result_en, pass_meta=result_meta, pass_range = range(len(result_en)))
 
 
