@@ -52,6 +52,13 @@ def clear_lists(): # to reset the session
     json_conv.clear()
     page_uri.clear() 
 
+def img_to_cv():
+    print("entered")
+    images.clear()
+    for i in range(len(image_path)):
+        images.append(cv2.imread(image_path[i]))
+
+
 def ocrPage(page): # to ocr a single page
     reader = easyocr.Reader(['ar'])
     result = reader.readtext(page, detail = 0)
@@ -84,8 +91,8 @@ def get_whole_pages_detections(model):
     on each page (each page has one element in the detections list)
     """
     detections = []
-    for i in range(len(image_path)):
-        images.append(cv2.imread(image_path[i]))
+    img_to_cv()
+    for i in range(len(images)):
         layout = model.detect(images[i])
         detections.append(layout)
     return detections
@@ -279,16 +286,20 @@ def upload_image():
 
 @app.route('/metadata', methods=['POST', 'GET']) # metadata preview
 def metadata():
+    img_to_cv()
     index_meta = 0 # keep track of current page
     if request.method == 'POST':
         meta_request = request.get_json() # getting request data
-        index_meta = int(meta_request[0]['index']) # passed index
-        if (int(meta_request[0]['write']) == 1): # parameter to check for modifications
+        index_meta = int(meta_request['index']) # passed index
+        if (meta_request['operation'] == 'write'): # parameter to check for modifications
             # modifying current metadata
-            meta_data[index_meta]['name'] = meta_request[0]['name'] 
-            meta_data[index_meta]['issue_date'] = meta_request[0]['issue_date'] 
-            meta_data[index_meta]['issue'] = meta_request[0]['issue'] 
-            meta_data[index_meta]['page'] = meta_request[0]['page']
+            meta_data[index_meta]['name'] = meta_request['name'] 
+            meta_data[index_meta]['issue_date'] = meta_request['issue_date'] 
+            meta_data[index_meta]['issue'] = meta_request['issue'] 
+            meta_data[index_meta]['page'] = meta_request['page']
+        elif (meta_request['operation'] == 'ocr'):
+            print(index_meta, len(images))
+            meta_data[index_meta]['ocr'] = ocrPage(images[index_meta])
     return render_template('meta_data.html', page_uri=page_uri, rng_img = range(len(page_name)), index_meta = index_meta, meta_data=meta_data)
 
 

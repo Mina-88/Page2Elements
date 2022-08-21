@@ -28,7 +28,7 @@
             <input id="p_iss" name="p_iss" type="text">
             <label for="p_num" class="label_meta">Page Number </label>
             <input id="p_num" name="p_num" type="text">      
-            <input id="add_meta" type="button" value="Save Changes" onclick="send_meta()">      
+            <input id="add_meta" type="button" value="Save Changes" onclick="send_meta('write', '{{index_meta}}')">      
         </form>
         <div class="btn_div">
             <div class="mini_btn_div">
@@ -38,6 +38,7 @@
             <div class="mini_btn_div">
                 <input type="button" class="btn_exp" value = "Reset" onclick="reset_meta()">
                 <input type="button" class="btn_exp" value = "Edit" onclick="insert_meta()">
+                <input type="button" class="btn_exp" value = "OCR Page" onclick="send_meta('ocr', '{{index_meta}}')">                
             </div>
             <div class="mini_btn_div">
                 <input type="button" class="btn_exp" value = "New Session" onclick="up_red()">
