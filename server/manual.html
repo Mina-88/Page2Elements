@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title> Page2Elements | Manual Additions </title>
+{% endblock %}
+
+{% block body %}
+    <div id="manual_anchor">
+        <div id="manual_detection_div" class="manual_div">
+            <img src="{{img_src[sv_ind]}}" id="img_man" draggable="false" class="man_img">
+            <input type="hidden" name="hid_ind"id="pg_ind" value="{{sv_ind}}" data-range="{{rng_img | length}}">
+            <div id="crop-rect"></div>
+        {% for j in range(0, det_co | length) %}
+            <div id="det-rect_{{j}}" class="det_rect" draggable="false"></div>
+            <script>
+                var rect_div = document.getElementById("det-rect_{{j}}");
+                var img = document.getElementById("img_man")
+                var old_width = `${"{{det_co[j]['x_2']}}" - "{{det_co[j]['x_1']}}"}`;
+                var old_height = `${"{{det_co[j]['y_2']}}" - "{{det_co[j]['y_1']}}"}`;
+                var width_ratio = img.clientWidth / img.naturalWidth;
+                var height_ratio = img.clientHeight / img.naturalHeight;
+                rect_div.style.top = `${"{{det_co[j]['y_1']}}" * height_ratio}px`;
+                rect_div.style.left = `${"{{det_co[j]['x_1']}}" * width_ratio}px`;
+                rect_div.style.right = `${"{{det_co[j]['x_2']}}" * width_ratio}px`;
+                rect_div.style.bottom = `${"{{det_co[j]['y_2']}}" * height_ratio}px`;
+                rect_div.style.width = `${old_width * width_ratio}px`;
+                rect_div.style.height = `${old_height * height_ratio}px`;
+                rect_div.style.borderStyle = "solid";
+                rect_div.style.borderColor = "blue";
+                rect_div.style.position = "absolute";     
+            </script> 
+        {% endfor %}
+            <script>
+                var pages = [];
+            </script>
+            {% for i in rng_img%}
+                <script>
+                    pages.push("{{img_src[i]}}");
+                </script>
+            {% endfor %}
+        </div>
+        <div class="btn_div">
+            <div class="mini_btn_div">
+                <input type="button" class="btn_exp" name = "manual_btn" value = "Previous Page" onclick='prev_page_man(pages)' id="prev_btn">
+                <input type="button" class="btn_exp" name = "manual_btn" value = "Next Page" onclick='next_page_man(pages)'>
+            </div>
+            <div class="mini_btn_div">
+                <input type="button" class="btn_exp" name = "manual_btn" value = "Reset" onclick="reset_man()">
+                <input type="button" class="btn_exp" name = "manual_btn" value = "Add New" onclick="init()">
+                <input type="button" class="btn_exp" name = "manual_btn" value = "Confirm" onclick="confirm_man()" id="conf_btn">
+            </div>
+            <div class="mini_btn_div">
+                <input type="button" class="btn_exp" name = "manual_btn" value = "Show Detections" onclick="det_red()">
+                <input type="button" class="btn_exp" name = "manual_btn" value = "Go to Downloads" onclick="down_red()">
+            </div>
+        </div>
+    </div>
+{% endblock%}

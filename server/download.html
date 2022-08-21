@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title> Page2Elements | Downloads </title>
+{% endblock %}
+
+{% block body%}
+    <div class="download-container">
+        <h2> Choose the download format:</h2>
+        <form method = "post">
+            <input type="submit" class="btn_exp" name = "download" value="Images & CSV">
+            <input type="submit" class="btn_exp" name = "download" value="JSON">
+            <h2> Or start a new session: </h2>
+            <input type="submit" class="btn_exp" name = "download" value="Go to Uploads">
+        </form>
+    </div>
+{% endblock%}

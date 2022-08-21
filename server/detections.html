@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title> Page2Elements | Results </title>
+{% endblock %}
+
+{% block body %}
+    <div id="detections_content">
+        <div id="det_prev">
+            {% for i in pass_range %}
+                <div method="post" class="det_container">
+                    <img src="data:image/png;base64, {{ pass_files[i]['obj'] }}" class="img_det_prev">
+                    <p>{{pass_meta[i]['obj']}}</p>
+                    <div id="cap_in_div_{{i}}" hidden>
+                        <label for="cap_in">Caption </label>
+                        <input id="cap_in_{{i}}" type="text">
+                        <input id="cap_in_btn" type="button" value="Submit" onclick="manual_caption('{{i}}')">
+                    </div>
+                    <div class="mini_btn_div">
+                        <input type="button" class="btn_exp" value="Remove Image" onclick="remove_image('{{i}}')">
+                        <input type="button" class="btn_exp" value="Remove Caption" onclick="remove_caption('{{i}}')">
+                        <input type="button" class="btn_exp" value="Generate Captions" onclick="generate_caption('{{i}}')">
+                        <input type="button" class="btn_exp" value="Manual Captions" onclick="view_input('{{i}}')">
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="btn_div">
+            <input type="button" class="btn_exp" value = "Add Manually" onclick="man_red()">
+            <input type="button" class="btn_exp" value = "Download" onclick="down_red()">
+        </div>
+    </div>
+    
+{% endblock%}

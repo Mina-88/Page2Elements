@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title> Page2Elements | Upload </title>
+{% endblock %}
+
+{% block body%}
+<div id="upload_div">
+    <form id = 'up_im' method="post" enctype="multipart/form-data">
+        <label for = 'up_img'> Upload your image(s) here:</label>
+        <input type="file" name="file" id = 'up_img' multiple/>
+        <input type="submit" id="upload_btn" value = "Upload Image" class="btn_exp">
+    </form>
+</div>
+{% endblock%}
