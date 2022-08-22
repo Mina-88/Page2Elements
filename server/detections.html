@@ -10,7 +10,7 @@
             {% for i in pass_range %}
                 <div method="post" class="det_container">
                     <img src="data:image/png;base64, {{ pass_files[i]['obj'] }}" class="img_det_prev">
-                    <p>{{pass_meta[i]['obj']}}</p>
+                    <div class="metadata_preview">{{pass_meta[i]['obj']}}</div>
                     <div id="cap_in_div_{{i}}" hidden>
                         <label for="cap_in">Caption </label>
                         <input id="cap_in_{{i}}" type="text">
@@ -21,6 +21,7 @@
                         <input type="button" class="btn_exp" value="Remove Caption" onclick="remove_caption('{{i}}')">
                         <input type="button" class="btn_exp" value="Generate Captions" onclick="generate_caption('{{i}}')">
                         <input type="button" class="btn_exp" value="Manual Captions" onclick="view_input('{{i}}')">
+                        <input type="button" class="btn_exp" value="Generate OCR" onclick="ocr_detection('{{i}}')">
                     </div>
                 </div>
             {% endfor %}

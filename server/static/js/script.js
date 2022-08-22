@@ -105,6 +105,10 @@ function manual_caption(index) {
   send_det_data('manual_caption', index);
 }
 
+function ocr_detection(index) {
+  send_det_data('ocr', index);
+}
+
 function send_det_data(operation, index) {
   var temp_json = {};
   if (operation !== 'manual_caption') {
