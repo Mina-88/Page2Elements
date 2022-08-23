@@ -9,6 +9,14 @@
         <div id="manual_detection_div" class="manual_div">
             <img src="{{img_src[sv_ind]}}" id="img_man" draggable="false" class="man_img">
             <input type="hidden" name="hid_ind"id="pg_ind" value="{{sv_ind}}" data-range="{{rng_img | length}}">
+            <script>
+                var pages = [];
+            </script>
+            {% for i in rng_img%}
+                <script>
+                    pages.push("{{img_src[i]}}");
+                </script>
+            {% endfor %}
             <div id="crop-rect"></div>
         {% for j in range(0, det_co | length) %}
             <div id="det-rect_{{j}}" class="det_rect" draggable="false"></div>
@@ -30,14 +38,31 @@
                 rect_div.style.position = "absolute";     
             </script> 
         {% endfor %}
+        {% for k in range(0, man_co | length) %}
+            <div id="man-rect_{{k}}" class="man_rect" draggable="false"></div>
             <script>
-                var pages = [];
-            </script>
-            {% for i in rng_img%}
+                var rect_div = document.getElementById("man-rect_{{k}}");
+                var img = document.getElementById("img_man")
+                var old_width = `${"{{man_co[k]['x_2']}}" - "{{man_co[k]['x_1']}}"}`;
+                var old_height = `${"{{man_co[k]['y_2']}}" - "{{man_co[k]['y_1']}}"}`;
+                var width_ratio = img.clientWidth / img.naturalWidth;
+                var height_ratio = img.clientHeight / img.naturalHeight;
+                rect_div.style.top = `${"{{man_co[k]['y_1']}}" * height_ratio}px`;
+                rect_div.style.left = `${"{{man_co[k]['x_1']}}" * width_ratio}px`;
+                rect_div.style.right = `${"{{man_co[k]['x_2']}}" * width_ratio}px`;
+                rect_div.style.bottom = `${"{{man_co[k]['y_2']}}" * height_ratio}px`;
+                rect_div.style.width = `${old_width * width_ratio}px`;
+                rect_div.style.height = `${old_height * height_ratio}px`;
+                rect_div.style.borderStyle = "solid";
+                rect_div.style.borderColor = "yellow";
+                rect_div.style.position = "absolute";     
+            </script> 
+            {% if man_co[k]['crop'] == '1' %}
                 <script>
-                    pages.push("{{img_src[i]}}");
+                    rect_div.style.borderColor = "red";
                 </script>
-            {% endfor %}
+            {% endif %}
+        {% endfor %}
         </div>
         <div class="btn_div">
             <div class="mini_btn_div">
