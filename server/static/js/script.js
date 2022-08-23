@@ -287,8 +287,6 @@ function next_page_man(pages)
 
 function prev_page_man(pages)
 {
-  // var div_sel = document.querySelectorAll(".div_sel");
-  // div_sel.forEach(sel => { sel.remove()  });
   var input = document.getElementById("pg_ind");
   var index = parseInt(input.value);
   var curr_index = index;
@@ -317,29 +315,37 @@ function confirm_man()
   send_man_data('crop');
 }
 
+function man_array(operation, selections, index, curr_index) {
+  var js_sel = [];
+  var temp_json = {};
+  var img = document.getElementById("img_man")
+  var width_ratio = img.clientWidth / img.naturalWidth;
+  var height_ratio = img.clientHeight / img.naturalHeight;
+  selections.forEach(t => { temp_json = {"y_1":t.style.top, "x_1":t.style.left, "x_2":t.style.right, "y_2":t.style.bottom, "index":index, "operation":operation, "ratio_w": width_ratio, "ratio_h": height_ratio, "size": '1', "curr_index": curr_index};
+                            js_sel.push(temp_json);
+                            t.remove();});
+  return js_sel;
+}
+
 function send_man_data(operation, curr_index) {
   var selections = document.querySelectorAll(".div_sel");
-  var index_hid = document.getElementById("pg_ind").getAttribute("value");
+  var index = document.getElementById("pg_ind").getAttribute("value");
+  var js_sel = [];
   if (operation == 'navigate') {
-    if (selections.length != 0) {
-      var js_sel = [];
-      var temp_json = {};
-      var img = document.getElementById("img_man")
-      var width_ratio = img.clientWidth / img.naturalWidth;
-      var height_ratio = img.clientHeight / img.naturalHeight;
-      selections.forEach(t => { temp_json = {"y_1":t.style.top, "x_1":t.style.left, "x_2":t.style.right, "y_2":t.style.bottom, "index":index_hid, "operation":'navigate', "ratio_w": width_ratio, "ratio_h": height_ratio, "size": '1', "curr_index": curr_index};
-                          js_sel.push(temp_json); })
-    } 
-    else {
-      var js_sel = [];
-      var temp_json = {"index":index_hid, "operation":'navigate', "size": '0'};
+    if (selections.length === 0) {
+      var temp_json = {"index":index, "operation":'navigate', "size": '0'};
       js_sel.push(temp_json);
     }  
   }
   else if (operation == 'crop') {
-    var js_sel = [];
-    var temp_json = {"index":index_hid, "operation":'crop'};
-    js_sel.push(temp_json);
+    if (selections.length === 0) {
+      var temp_json = {"index":index, "operation":'crop', "size": '0'};
+      js_sel.push(temp_json);
+    }
+  }
+  if (selections.length !== 0) {
+    curr_index = (typeof curr_index !== 'undefined') ? curr_index : index;
+    js_sel = man_array(operation, selections, index, curr_index);    
   }
   $.ajax({
     url:"/manual_detections",

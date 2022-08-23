@@ -299,7 +299,6 @@ def metadata():
             meta_data[index_meta]['issue'] = meta_request['issue'] 
             meta_data[index_meta]['page'] = meta_request['page']
         elif (meta_request['operation'] == 'ocr'):
-            print(index_meta, len(images))
             meta_data[index_meta]['ocr'] = ocrPage(images[index_meta])
     return render_template('meta_data.html', page_uri=page_uri, rng_img = range(len(page_name)), index_meta = index_meta, meta_data=meta_data, length = len(page_name))
 
@@ -345,38 +344,28 @@ def manual():
     if request.method == 'POST':
         manual_req = request.get_json()
         index_manual = int(manual_req[0]['index']) # get new index
-        if (manual_req[0]['operation'] == 'navigate'):
-            if (manual_req[0]['size'] == '1'):
-                curr_index = manual_req[0]['curr_index']
-                for i in range(len(manual_req)):
-                    del manual_req[i]['size']
-                    del manual_req[i]['operation']
-                    manual_req[i]['crop'] = '0'
-                    manual_req[i]['x_1'] = int(float(manual_req[i]['x_1'][:len(manual_req[i]['x_1']) - 2])  / manual_req[i]['ratio_w'])
-                    manual_req[i]['x_2'] = int(float(manual_req[i]['x_2'][:len(manual_req[i]['x_2']) - 2])/ manual_req[i]['ratio_w'])
-                    manual_req[i]['y_1'] = int(float(manual_req[i]['y_1'][:len(manual_req[i]['y_1']) - 2]) / manual_req[i]['ratio_h'])
-                    manual_req[i]['y_2'] = int(float(manual_req[i]['y_2'][:len(manual_req[i]['y_2']) - 2]) / manual_req[i]['ratio_h'])
-                    # print(manual_req[i], "request")
-                    man_co[curr_index].append(manual_req[i])
-                    # print(man_co)
-        elif (manual_req[0]['operation'] == 'crop'): # if the user added selections
-            for i in range(len(man_co)):
-                if man_co[i]['crop'] == '0':
-                    print(type(man_co[i]['y_1']), type(man_co[i]['y_2']), type(man_co[i]['x_1']), type(man_co[i]['x_2']))
-                    curr_crop_img = images[index_manual][man_co[i]['y_1']:man_co[i]['y_2'], man_co[i]['x_1']:man_co[i]['x_2']]
+        if (manual_req[0]['size'] == '1'):
+            curr_index = int(manual_req[0]['curr_index'])
+            for i in range(len(manual_req)):
+                del manual_req[i]['size']
+                manual_req[i]['crop'] = '0'
+                manual_req[i]['x_1'] = int(float(manual_req[i]['x_1'][:len(manual_req[i]['x_1']) - 2])  / manual_req[i]['ratio_w'])
+                manual_req[i]['x_2'] = int(float(manual_req[i]['x_2'][:len(manual_req[i]['x_2']) - 2])/ manual_req[i]['ratio_w'])
+                manual_req[i]['y_1'] = int(float(manual_req[i]['y_1'][:len(manual_req[i]['y_1']) - 2]) / manual_req[i]['ratio_h'])
+                manual_req[i]['y_2'] = int(float(manual_req[i]['y_2'][:len(manual_req[i]['y_2']) - 2]) / manual_req[i]['ratio_h'])
+                man_co[curr_index].append(manual_req[i])
+        if (manual_req[0]['operation'] == 'crop'): # if the user added selections
+            for i in range(len(man_co[index_manual])):
+                if man_co[index_manual][i]['crop'] == '0':
+                    curr_crop_img = images[index_manual][man_co[index_manual][i]['y_1']:man_co[index_manual][i]['y_2'], man_co[index_manual][i]['x_1']:man_co[index_manual][i]['x_2']]
                     result_cv.append({"page": index_manual, "obj":curr_crop_img, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
                     temp_meta = copy.deepcopy(meta_data[index_manual])
                     temp_meta.pop('ocr', None)
                     temp_name = copy.deepcopy(page_name[index_manual])
                     result_meta.append({"page": index_manual, "obj":temp_meta, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
                     download_name.append({"page": index_manual, "obj":temp_name, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
-                    man_co[i]['crop'] = '1'
-        # print(man_co, "man_co")
-        # print(man_co[curr_index], "man_co_curr_index")        
-        # print(man_co[index_manual], "man_co_index")
-        # print(index_manual, "index")
-        return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], man_co = man_co[index_manual], sv_ind = index_manual)
-    return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], sv_ind = index_manual)
+                    man_co[index_manual][i]['crop'] = '1'
+    return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], sv_ind = index_manual, man_co = man_co[index_manual])
 
 
 if __name__ == "__main__":
