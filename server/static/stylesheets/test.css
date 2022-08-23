@@ -12,7 +12,7 @@ html {
 .btn_exp {
     width: 130px;
     height: 35px;
-    margin: 2px;
+    margin: 1px;
 }
 
 .btn_div {
@@ -22,7 +22,7 @@ html {
 }
 
 .mini_btn_div {
-    margin: 3px;
+    margin: 2px;
 }
 
 /* Upload Page */
@@ -167,6 +167,10 @@ div#manual_anchor
 
 .det_rect {
     user-select: none;
+}
+
+#man_color_code {
+    margin: 4.5px;
 }
 
 /* Downloads Page */
