@@ -58,7 +58,6 @@ def img_to_cv():
     for i in range(len(image_path)):
         images.append(cv2.imread(image_path[i]))
 
-
 def ocrPage(page): # to ocr a single page
     reader = easyocr.Reader(['ar'])
     result = reader.readtext(page, detail = 0)
@@ -290,7 +289,8 @@ def metadata():
     img_to_cv()
     index_meta = 0 # keep track of current page
     if request.method == 'POST':
-        meta_request = request.get_json() # getting request data
+        meta_request = request.get_json()# getting request data
+        print(meta_request) 
         index_meta = int(meta_request['index']) # passed index
         if (meta_request['operation'] == 'write'): # parameter to check for modifications
             # modifying current metadata
@@ -301,7 +301,7 @@ def metadata():
         elif (meta_request['operation'] == 'ocr'):
             print(index_meta, len(images))
             meta_data[index_meta]['ocr'] = ocrPage(images[index_meta])
-    return render_template('meta_data.html', page_uri=page_uri, rng_img = range(len(page_name)), index_meta = index_meta, meta_data=meta_data)
+    return render_template('meta_data.html', page_uri=page_uri, rng_img = range(len(page_name)), index_meta = index_meta, meta_data=meta_data, length = len(page_name))
 
 
 @app.route('/detections', methods=['GET', 'POST']) # detections preview

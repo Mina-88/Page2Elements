@@ -80,6 +80,14 @@ div#meta_anchor
     margin: 10px;
 }
 
+#page_num {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
 /* Detections Page */
 #detections_content {
     display: flex;
@@ -169,4 +177,7 @@ div#manual_anchor
     align-items: center;
     justify-content: center;
 }
+
+
+
 

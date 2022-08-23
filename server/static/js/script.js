@@ -1,21 +1,40 @@
 // Metadata Page
-function next_page_meta(pages)
+function next_page_meta(pages, meta_r)
 {
   var input = document.getElementById("pg_ind_meta");
   var index = parseInt(input.value);
   var rng = input.dataset.range;
+
   index += 1;
   var img = document.getElementById("meta_img");
   if (index > rng - 1) {
     img.src = pages[0];
     document.getElementById("pg_ind_meta").value = 0;
+    index = 0;
+    document.getElementById("md_prev").innerHTML = meta_r[index];
+    document.getElementById("page_num").innerHTML = `Page ${index+1} out of ${rng}`;
   }
   else {
     img.src = pages[index];
     document.getElementById("pg_ind_meta").value = index;
+    document.getElementById("md_prev").innerHTML = meta_r[index];
+    document.getElementById("page_num").innerHTML = `Page ${index+1} out of ${rng}`;
   }
-  send_meta('navigate', );
+  //send_meta('navigate', index);
 }
+
+function ocr_op()
+{
+  var ind = document.getElementById("pg_ind_meta").value;
+  send_meta('ocr', ind);
+}
+
+function change_meta()
+{
+  var ind = document.getElementById("pg_ind_meta").value;
+  send_meta('write', ind);
+}
+
 
 function prev_page_meta(pages)
 {
@@ -27,17 +46,22 @@ function prev_page_meta(pages)
   if (index < 0) {
     img.src = pages[rng - 1];
     document.getElementById("pg_ind_meta").value = (rng - 1);
+    index = rng-1;
+    document.getElementById("md_prev").innerHTML = meta_r[index];
+    document.getElementById("page_num").innerHTML = `Page ${index+1} out of ${rng}`;
   }
   else {
     img.src = pages[index];
     document.getElementById("pg_ind_meta").value = index;
+    document.getElementById("md_prev").innerHTML = meta_r[index];
+    document.getElementById("page_num").innerHTML = `Page ${index+1} out of ${rng}`;
   }
-  send_meta();
+  //send_meta('navigate', index);
 }
 
 function send_meta(operation, index_meta) {
   if (operation === 'navigate') {
-    var temp_json = {"index": index_meta};
+    var temp_json = {"index": index_meta, "operation": 'navigate'};
   }
   else if (operation === 'write') {
     data = $('#meta_input').serializeArray().reduce(function(obj, item) { obj[item.name] = item.value; return obj}, {}); // Form data to a key-value form
@@ -46,12 +70,14 @@ function send_meta(operation, index_meta) {
   else if (operation === 'ocr') {
     var temp_json = {"index": index_meta, "operation": 'ocr'};
   }
+
   $.ajax({
     url:"/metadata",
     type:"POST",
     contentType: "application/json",
     data: JSON.stringify(temp_json),
-    success:function(response){ document.write(response); document.close();}});
+    success:function(response){console.log(response);
+    document.write(response); document.close();}});
 }  
 
 function insert_meta() {
