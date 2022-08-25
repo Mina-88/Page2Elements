@@ -6,12 +6,14 @@
 
 {% block body%}
     <div class="download-container">
-        <h2> Choose the download format:</h2>
-        <form method = "post">
-            <input type="submit" class="btn_exp" name = "download" value="Images & CSV">
-            <input type="submit" class="btn_exp" name = "download" value="JSON">
+        <form method = "post" id="down_form">
+            <h2> Choose the download format:</h2>
+            <div>
+                <input type="submit" class="btn_exp" name = "download" value="Images & CSV">
+                <input type="submit" class="btn_exp" name = "download" value="JSON">
+            </div>
             <h2> Or start a new session: </h2>
-            <input type="submit" class="btn_exp" name = "download" value="Go to Uploads">
+            <input type="submit" class="btn_exp" name = "download" value="Go to Uploads" style="background-color: maroon">
         </form>
     </div>
 {% endblock%}

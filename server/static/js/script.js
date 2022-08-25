@@ -186,7 +186,8 @@ function appendSelectionRectangle(selection) {
     rect_div.style.right = `${selection.right - ref_left}px`;  
     rect_div.style.bottom = `${selection.bottom - ref_top}px`;  
     rect_div.style.borderStyle = "solid";
-    rect_div.style.borderColor = "black";
+    rect_div.style.borderColor = "#07510c";
+    rect_div.style.boxSizing = "border-box";
     rect_div.style.position = "absolute";
     document.querySelector("#manual_detection_div").appendChild(rect_div);
 }
@@ -282,6 +283,7 @@ function next_page_man(pages)
     img.src = pages[index];
     document.getElementById("pg_ind").value = index;
   }
+  document.getElementById("page_num").innerHTML = `Page ${index+1} out of ${rng}`;
   send_man_data('navigate', curr_index);
 }
 
@@ -301,6 +303,7 @@ function prev_page_man(pages)
     img.src = pages[index];
     document.getElementById("pg_ind").value = index;
   }
+  document.getElementById("page_num").innerHTML = `Page ${index+1} out of ${rng}`;
   send_man_data('navigate', curr_index);
 }
 
@@ -310,10 +313,6 @@ function reset_man()
   div_sel.forEach(sel => { sel.remove()  });
 }
 
-function confirm_man() 
-{
-  send_man_data('crop');
-}
 
 function man_array(operation, selections, index, curr_index) {
   var js_sel = [];
@@ -321,7 +320,7 @@ function man_array(operation, selections, index, curr_index) {
   var img = document.getElementById("img_man")
   var width_ratio = img.clientWidth / img.naturalWidth;
   var height_ratio = img.clientHeight / img.naturalHeight;
-  selections.forEach(t => { temp_json = {"y_1":t.style.top, "x_1":t.style.left, "x_2":t.style.right, "y_2":t.style.bottom, "index":index, "operation":operation, "ratio_w": width_ratio, "ratio_h": height_ratio, "size": '1', "curr_index": curr_index};
+  selections.forEach(t => { temp_json = {"y_1":t.style.top, "x_1":t.style.left, "x_2":t.style.right, "y_2":t.style.bottom, "index":index, "operation":operation, "ratio_w": width_ratio, "ratio_h": height_ratio, "empty": '0', "curr_index": curr_index};
                             js_sel.push(temp_json);
                             t.remove();});
   return js_sel;
@@ -333,15 +332,9 @@ function send_man_data(operation, curr_index) {
   var js_sel = [];
   if (operation == 'navigate') {
     if (selections.length === 0) {
-      var temp_json = {"index":index, "operation":'navigate', "size": '0'};
+      var temp_json = {"index":index, "operation":'navigate', "empty": '1'};
       js_sel.push(temp_json);
     }  
-  }
-  else if (operation == 'crop') {
-    if (selections.length === 0) {
-      var temp_json = {"index":index, "operation":'crop', "size": '0'};
-      js_sel.push(temp_json);
-    }
   }
   if (selections.length !== 0) {
     curr_index = (typeof curr_index !== 'undefined') ? curr_index : index;
@@ -354,13 +347,7 @@ function send_man_data(operation, curr_index) {
     data: JSON.stringify(js_sel),
     success:function(response){ console.log(response); document.write(response); document.close();}
   });
-  // location.reload();
 }   
-
-function rst_det_prev() {
-  rst_det = document.querySelectorAll(".det_rect");
-  rst_det.forEach(det => {det.remove();});
-}
 
 // General Functions
 function down_red() {
@@ -375,3 +362,6 @@ function det_red() {
   window.location.href = "/detections";
 }
 
+function up_red() {
+  window.location.href = "/";
+}

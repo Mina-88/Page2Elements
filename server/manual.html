@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block body %}
+<div id="manual_content">
+    <input type="button" class="btn_exp" name = "manual_btn" value = "Previous Page" onclick='prev_page_man(pages)' id="prev_btn">
     <div id="manual_anchor">
         <div id="manual_detection_div" class="manual_div">
             <img src="{{img_src[sv_ind]}}" id="img_man" draggable="false" class="man_img">
@@ -35,6 +37,7 @@
                 rect_div.style.height = `${old_height * height_ratio}px`;
                 rect_div.style.borderStyle = "solid";
                 rect_div.style.borderColor = "navy";
+                rect_div.style.boxSizing = "border-box"
                 rect_div.style.position = "absolute";     
             </script> 
         {% endfor %}
@@ -54,36 +57,31 @@
                 rect_div.style.width = `${old_width * width_ratio}px`;
                 rect_div.style.height = `${old_height * height_ratio}px`;
                 rect_div.style.borderStyle = "solid";
-                rect_div.style.borderColor = "teal";
+                rect_div.style.borderColor = "purple";
+                rect_div.style.boxSizing = "border-box";
                 rect_div.style.position = "absolute";     
             </script> 
-            {% if man_co[k]['crop'] == '1' %}
-                <script>
-                    rect_div.style.borderColor = "purple";
-                </script>
-            {% endif %}
         {% endfor %}
         </div>
+        <p id="page_num"> Page {{sv_ind+1}} out of {{length}}</p>
         <p id="man_color_code">
             <span style="color: navy;">Navy: </span> Automatic Detections&emsp;
-            <span style="color: Teal;">Teal: </span> Saved - Not Cropped&emsp;
             <span style="color: purple;">Purple: </span> Cropped&emsp;
-            <span style="color: black;">Black: </span> Not saved&emsp;
+            <span style="color: #07510c;">Green: </span> Not saved&emsp;
         </p>
         <div class="btn_div">
             <div class="mini_btn_div">
-                <input type="button" class="btn_exp" name = "manual_btn" value = "Previous Page" onclick='prev_page_man(pages)' id="prev_btn">
-                <input type="button" class="btn_exp" name = "manual_btn" value = "Next Page" onclick='next_page_man(pages)'>
+                <input type="button" class="btn_exp" name = "manual_btn" value = "Reset" onclick="reset_man()" style="background-color: maroon;">
+                <input type="button" class="btn_exp" name = "manual_btn" value = "Add New" onclick="init()" style="background-color: #07510c;">
+                <input type="button" class="btn_exp" name = "manual_btn" value = "Confirm" onclick="send_man_data()" id="conf_btn" style="background-color: purple;">
             </div>
             <div class="mini_btn_div">
-                <input type="button" class="btn_exp" name = "manual_btn" value = "Reset" onclick="reset_man()">
-                <input type="button" class="btn_exp" name = "manual_btn" value = "Add New" onclick="init()">
-                <input type="button" class="btn_exp" name = "manual_btn" value = "Confirm" onclick="confirm_man()" id="conf_btn">
-            </div>
-            <div class="mini_btn_div">
+                <input type="button" class="btn_exp" value = "New Session" onclick="up_red()"  style="background-color: maroon">
                 <input type="button" class="btn_exp" name = "manual_btn" value = "Show Detections" onclick="det_red()">
                 <input type="button" class="btn_exp" name = "manual_btn" value = "Go to Downloads" onclick="down_red()">
-            </div>
+            </div>  
         </div>
     </div>
+    <input type="button" class="btn_exp" value = "Next Page" onclick='next_page_man(pages)'>
+</div>
 {% endblock%}

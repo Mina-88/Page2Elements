@@ -5,50 +5,50 @@
 {% endblock %}
 
 {% block body %}
-    <div id="meta_anchor">
-        <div id="meta_div">
-            <img src="{{page_uri[index_meta]}}" id="meta_img" draggable="false" class="img_meta">
-            <input type="hidden" name="hid_ind"id="pg_ind_meta" value="{{index_meta}}" data-range="{{rng_img | length}}">
-            <script>
-                var pages_meta = [];
-                var meta_r = [];
-                //var currInd = document.getElementById("pg_ind_meta").value;
-            </script>
-            {% for i in rng_img%}
+    <div id="meta_content">
+        <input type="button" class="btn_exp" value = "Previous Page" onclick='prev_page_meta(pages_meta, meta_r)' style="background-color: black">
+        <div id="meta_anchor">
+            <div id="meta_div">
+                <img src="{{page_uri[index_meta]}}" id="meta_img" draggable="false" class="img_meta">
+                <input type="hidden" name="hid_ind"id="pg_ind_meta" value="{{index_meta}}" data-range="{{rng_img | length}}">
                 <script>
-                    pages_meta.push("{{page_uri[i]}}");
-                    meta_r.push("{{meta_data[i]}}");
+                    var pages_meta = [];
+                    var meta_r = [];
+                    //var currInd = document.getElementById("pg_ind_meta").value;
                 </script>
-            {% endfor %}
-        </div>
-        <div class="metadata_preview" id="md_prev">{{meta_data[index_meta]}}</div>
-        <form hidden id="meta_input">
-            <label for="p_name" class="label_meta">Name </label>
-            <input id="p_name" name="p_name" type="text">
-            <label for="p_iss_date" class="label_meta">Issue Date </label>
-            <input id="p_iss_date" name="p_iss_date" type="text">
-            <label for="p_iss" class="label_meta">Issue </label>
-            <input id="p_iss" name="p_iss" type="text">
-            <label for="p_num" class="label_meta">Page Number </label>
-            <input id="p_num" name="p_num" type="text">      
-            <input id="add_meta" type="button" value="Save Changes" onclick="change_meta()">      
-        </form>
+                {% for i in rng_img%}
+                    <script>
+                        pages_meta.push("{{page_uri[i]}}");
+                        meta_r.push("{{meta_data[i]}}");
+                    </script>
+                {% endfor %}
+            </div>
+            <div class="metadata_preview" id="md_prev">{{meta_data[index_meta]}}</div>
+            <form hidden id="meta_input">
+                <label for="p_name" class="label_meta">Name </label>
+                <input id="p_name" name="p_name" type="text">
+                <label for="p_iss_date" class="label_meta">Issue Date </label>
+                <input id="p_iss_date" name="p_iss_date" type="text">
+                <label for="p_iss" class="label_meta">Issue </label>
+                <input id="p_iss" name="p_iss" type="text">
+                <label for="p_num" class="label_meta">Page Number </label>
+                <input id="p_num" name="p_num" type="text">      
+                <input id="add_meta" type="button" value="Save Changes" onclick="change_meta()">      
+            </form>
 
-        <p id="page_num"> Page {{index_meta+1}} out of {{length}}</p>
-        <div class="btn_div">
-            <div class="mini_btn_div">
-                <input type="button" class="btn_exp" value = "Previous Page" onclick='prev_page_meta(pages_meta, meta_r)'>
-                <input type="button" class="btn_exp" value = "Next Page" onclick='next_page_meta(pages_meta, meta_r)'>
-            </div>
-            <div class="mini_btn_div">
-                <input type="button" class="btn_exp" value = "Reset" onclick="reset_meta()">
-                <input type="button" class="btn_exp" value = "Edit" onclick="insert_meta()">
-                <input type="button" class="btn_exp" value = "OCR Page" onclick="ocr_op()">                
-            </div>
-            <div class="mini_btn_div">
-                <input type="button" class="btn_exp" value = "New Session" onclick="up_red()">
-                <input type="button" class="btn_exp" value = "Show Detections" onclick="det_red()">
+            <p id="page_num"> Page {{index_meta+1}} out of {{length}}</p>
+            <div class="btn_div">
+                <div class="mini_btn_div">
+                    <input type="button" class="btn_exp" value = "Reset" onclick="reset_meta()">
+                    <input type="button" class="btn_exp" value = "Edit" onclick="insert_meta()">
+                    <input type="button" class="btn_exp" value = "OCR Page" onclick="ocr_op()">                
+                </div>
+                <div class="mini_btn_div">
+                    <input type="button" class="btn_exp" value = "New Session" onclick="up_red()" style="background-color: maroon">
+                    <input type="button" class="btn_exp" value = "Show Detections" onclick="det_red()" style="background-color: darkblue">
+                </div>
             </div>
         </div>
+        <input type="button" class="btn_exp" value = "Next Page" onclick='next_page_meta(pages_meta, meta_r)' style="background-color: black">
     </div>
 {% endblock%}

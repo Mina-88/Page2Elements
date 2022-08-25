@@ -344,28 +344,29 @@ def manual():
     if request.method == 'POST':
         manual_req = request.get_json()
         index_manual = int(manual_req[0]['index']) # get new index
-        if (manual_req[0]['size'] == '1'):
+        if (manual_req[0]['empty'] == '0'):
             curr_index = int(manual_req[0]['curr_index'])
+            # Capturing Coordinates
             for i in range(len(manual_req)):
-                del manual_req[i]['size']
-                manual_req[i]['crop'] = '0'
+                del manual_req[i]['empty']
                 manual_req[i]['x_1'] = int(float(manual_req[i]['x_1'][:len(manual_req[i]['x_1']) - 2])  / manual_req[i]['ratio_w'])
                 manual_req[i]['x_2'] = int(float(manual_req[i]['x_2'][:len(manual_req[i]['x_2']) - 2])/ manual_req[i]['ratio_w'])
                 manual_req[i]['y_1'] = int(float(manual_req[i]['y_1'][:len(manual_req[i]['y_1']) - 2]) / manual_req[i]['ratio_h'])
                 manual_req[i]['y_2'] = int(float(manual_req[i]['y_2'][:len(manual_req[i]['y_2']) - 2]) / manual_req[i]['ratio_h'])
+                manual_req[i]['crop'] = 0
                 man_co[curr_index].append(manual_req[i])
-        if (manual_req[0]['operation'] == 'crop'): # if the user added selections
-            for i in range(len(man_co[index_manual])):
-                if man_co[index_manual][i]['crop'] == '0':
-                    curr_crop_img = images[index_manual][man_co[index_manual][i]['y_1']:man_co[index_manual][i]['y_2'], man_co[index_manual][i]['x_1']:man_co[index_manual][i]['x_2']]
-                    result_cv.append({"page": index_manual, "obj":curr_crop_img, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
-                    temp_meta = copy.deepcopy(meta_data[index_manual])
+            # Cropping the image
+            for i in range(len(man_co[curr_index])):
+                if man_co[curr_index][i]['crop'] == 0:
+                    man_co[curr_index][i]['crop'] = 1
+                    curr_crop_img = images[curr_index][man_co[curr_index][i]['y_1']:man_co[curr_index][i]['y_2'], man_co[curr_index][i]['x_1']:man_co[curr_index][i]['x_2']]
+                    result_cv.append({"page": curr_index, "obj":curr_crop_img, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
+                    temp_meta = copy.deepcopy(meta_data[curr_index])
                     temp_meta.pop('ocr', None)
-                    temp_name = copy.deepcopy(page_name[index_manual])
-                    result_meta.append({"page": index_manual, "obj":temp_meta, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
-                    download_name.append({"page": index_manual, "obj":temp_name, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
-                    man_co[index_manual][i]['crop'] = '1'
-    return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], sv_ind = index_manual, man_co = man_co[index_manual])
+                    temp_name = copy.deepcopy(page_name[curr_index])
+                    result_meta.append({"page": curr_index, "obj":temp_meta, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
+                    download_name.append({"page": curr_index, "obj":temp_name, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
+    return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], sv_ind = index_manual, man_co = man_co[index_manual], length = len(page_name))
 
 
 if __name__ == "__main__":

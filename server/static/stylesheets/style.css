@@ -13,12 +13,30 @@ html {
     width: 130px;
     height: 35px;
     margin: 1px;
+    margin-bottom: 0;
+    background-color: dimgrey;
+    border-radius: 8px;
+    border: none;
+    border-color: inherit;
+    color: mintcream;
+    font-size: 14px;
+    box-sizing: border-box;
 }
+
+.button {
+    transition-duration: 0.4s;
+}
+
+.btn_exp:hover {
+    opacity: 0.80;
+    transition: 0.4s;    
+}
+
 
 .btn_div {
     display: flex;
     flex-flow: row;
-    margin: 10px;
+    margin: 1px;
 }
 
 .mini_btn_div {
@@ -30,16 +48,22 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
-    justify-self: center;
     width: 100vw;
     height: 100vh;
 }
 
+
 #up_im {
     width: 40%;
     height: 40%;
+    background-color: #0c2e4a;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-flow: column;
 }
-
 
 /* Metadata Page */
 div#meta_anchor
@@ -55,6 +79,14 @@ div#meta_anchor
     height: 820px;
     width: 600px;
     position: relative;
+    margin: 3px;
+}
+
+#meta_content {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
 }
 
 #meta_img {
@@ -81,9 +113,9 @@ div#meta_anchor
 }
 
 #page_num {
-    /* width: 100%; */
-    margin: 2px;
-    font-weight: bold;
+    margin: 1px;
+    margin-bottom: 0;
+    font-style: italic;
 }
 
 
@@ -109,6 +141,9 @@ div#meta_anchor
     align-items: center;
     justify-content: center;
     margin: 15px;
+    border-radius: 25px;
+    background-color: #ededee;
+    padding: 15px;
 }
 
 .img_det_prev {
@@ -124,8 +159,9 @@ div#meta_anchor
     left: 0;
     opacity: 0;
     pointer-events: none;
-    border-color: black;
+    border-color: #07510c;
     border-style: solid;
+    box-sizing: border-box;
 }
 
 .dev_sel {
@@ -134,14 +170,14 @@ div#meta_anchor
     left: 0;
     opacity: 0;
     pointer-events: none;
-    border-color: black;
+    border-color: #07510c;
     border-style: solid;
+    box-sizing: border-box;
 }
 
 .man_img {
     user-select: none;
     display: block;
-    margin-bottom: 5px;
     height: 100%;
     width: 100%;
 }
@@ -150,6 +186,7 @@ div#meta_anchor
     height: 850px;
     width: 600px;
     position: relative;
+    margin: 3px;
 }
 
 .form_man {
@@ -165,12 +202,20 @@ div#manual_anchor
     align-items: center;
 }
 
+#manual_content {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+}
+
 .det_rect {
     user-select: none;
 }
 
 #man_color_code {
-    margin: 4.5px;
+    margin: 1px;
+    margin-bottom: 0;
 }
 
 /* Downloads Page */
@@ -179,6 +224,20 @@ div#manual_anchor
     flex-flow: column;
     align-items: center;
     justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+#down_form {
+    border-radius: 25px;
+    background-color: #0c2e4a;
+    color: white;
+    width: 40%;
+    height: 40%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
 }
 
 
