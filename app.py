@@ -122,23 +122,37 @@ def get_detections_coor(detections):
 
 def get_detections_images(coordinates, no_page_detections):
     # showing the images
+
     pages_pointer = 0
     page_detections_pointer = 0
+
     for i in range(len(page_name)):
         det_co[i] = []
-    # det_co[pages_pointer] = []
+
+
     for i in range(len(coordinates)):
+
+
         if(page_detections_pointer == no_page_detections[pages_pointer]):
             pages_pointer += 1
             page_detections_pointer = 0
             # det_co[pages_pointer] = []
                     
+        if(no_page_detections[pages_pointer] == 0):
+            pages_pointer += 1
+            page_detections_pointer = 0
+
+        if(pages_pointer > len(page_name)):
+            break
+
+
         # extracting the image
         x_1 = coordinates[i]['x_1']
         x_2 = coordinates[i]['x_2']
         y_1 = coordinates[i]['y_1']
         y_2 = coordinates[i]['y_2']
-        
+
+
         det_co[pages_pointer].append(coordinates[i])
         curr_crop_img = images[pages_pointer][y_1:y_2, x_1:x_2]
         result_cv.append({"page": pages_pointer, "obj":curr_crop_img, "index":page_detections_pointer})
