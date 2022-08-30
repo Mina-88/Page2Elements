@@ -34,6 +34,7 @@ download_name = []
 meta_data = []
 json_conv = []
 det_co = {}
+man_co = {}
 global manual_coor
 session = 0
 
@@ -53,10 +54,10 @@ def clear_lists(): # to reset the session
     page_uri.clear() 
 
 def img_to_cv():
-    print("entered")
     images.clear()
     for i in range(len(image_path)):
         images.append(cv2.imread(image_path[i]))
+        man_co[i] = []
 
 def ocrPage(page): # to ocr a single page
     reader = easyocr.Reader(['ar'])
@@ -289,8 +290,7 @@ def metadata():
     img_to_cv()
     index_meta = 0 # keep track of current page
     if request.method == 'POST':
-        meta_request = request.get_json()# getting request data
-        print(meta_request) 
+        meta_request = request.get_json() # getting request data
         index_meta = int(meta_request['index']) # passed index
         if (meta_request['operation'] == 'write'): # parameter to check for modifications
             # modifying current metadata
@@ -299,7 +299,6 @@ def metadata():
             meta_data[index_meta]['issue'] = meta_request['issue'] 
             meta_data[index_meta]['page'] = meta_request['page']
         elif (meta_request['operation'] == 'ocr'):
-            print(index_meta, len(images))
             meta_data[index_meta]['ocr'] = ocrPage(images[index_meta])
     return render_template('meta_data.html', page_uri=page_uri, rng_img = range(len(page_name)), index_meta = index_meta, meta_data=meta_data, length = len(page_name))
 
@@ -343,25 +342,32 @@ def download():
 def manual():
     index_manual = 0 # track current displayed page
     if request.method == 'POST':
-        manual_coor = request.get_json()
-        if (int(manual_coor[0]['sel']) == 1): # if the user added selections
-            for i in manual_coor:
-                #extracting the image
-                x_1 = int(float(i['left'][:len(i['left']) - 2])  / i['ratio_w'])
-                x_2 = int(float(i['right'][:len(i['right']) - 2])/ i['ratio_w'])
-                y_1 = int(float(i['top'][:len(i['top']) - 2]) / i['ratio_h'])
-                y_2 = int(float(i['bottom'][:len(i['bottom']) - 2]) / i['ratio_h'])
-                index_manual = int(i['index'])
-                curr_crop_img = images[index_manual][y_1:y_2, x_1:x_2]
-                
-                result_cv.append({"page": index_manual, "obj":curr_crop_img, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
-                result_meta.append({"page": index_manual, "obj":meta_data[index_manual], "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
-                download_name.append({"page": index_manual, "obj":page_name[index_manual], "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
-            return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], sv_ind = index_manual)
-        else: # the user is navigatting pages
-            index_manual = int(manual_coor[0]['index']) # get new index
-            return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], sv_ind = index_manual)
-    return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], sv_ind = index_manual)
+        manual_req = request.get_json()
+        index_manual = int(manual_req[0]['index']) # get new index
+        if (manual_req[0]['empty'] == '0'):
+            curr_index = int(manual_req[0]['curr_index'])
+            # Capturing Coordinates
+            for i in range(len(manual_req)):
+                del manual_req[i]['empty']
+                manual_req[i]['x_1'] = int(float(manual_req[i]['x_1'][:len(manual_req[i]['x_1']) - 2])  / manual_req[i]['ratio_w'])
+                manual_req[i]['x_2'] = int(float(manual_req[i]['x_2'][:len(manual_req[i]['x_2']) - 2])/ manual_req[i]['ratio_w'])
+                manual_req[i]['y_1'] = int(float(manual_req[i]['y_1'][:len(manual_req[i]['y_1']) - 2]) / manual_req[i]['ratio_h'])
+                manual_req[i]['y_2'] = int(float(manual_req[i]['y_2'][:len(manual_req[i]['y_2']) - 2]) / manual_req[i]['ratio_h'])
+                manual_req[i]['crop'] = 0
+                man_co[curr_index].append(manual_req[i])
+            # Cropping the image
+            for i in range(len(man_co[curr_index])):
+                if man_co[curr_index][i]['crop'] == 0:
+                    man_co[curr_index][i]['crop'] = 1
+                    curr_crop_img = images[curr_index][man_co[curr_index][i]['y_1']:man_co[curr_index][i]['y_2'], man_co[curr_index][i]['x_1']:man_co[curr_index][i]['x_2']]
+                    result_cv.append({"page": curr_index, "obj":curr_crop_img, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
+                    temp_meta = copy.deepcopy(meta_data[curr_index])
+                    temp_meta.pop('ocr', None)
+                    temp_name = copy.deepcopy(page_name[curr_index])
+                    result_meta.append({"page": curr_index, "obj":temp_meta, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
+                    download_name.append({"page": curr_index, "obj":temp_name, "index":((result_cv[len(result_cv) - 1]['index']) + 1)})
+    return render_template('manual.html', img_src=page_uri, rng_img = range(len(page_name)), det_co = det_co[index_manual], sv_ind = index_manual, man_co = man_co[index_manual], length = len(page_name))
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -7,9 +7,13 @@
 {% block body%}
 <div id="upload_div">
     <form id = 'up_im' method="post" enctype="multipart/form-data">
-        <label for = 'up_img'> Upload your image(s) here:</label>
-        <input type="file" name="file" id = 'up_img' multiple/>
-        <input type="submit" id="upload_btn" value = "Upload Image" class="btn_exp">
+        <p>Upload Your Images here: <p>
+        <div style="margin: 15px;">
+            <input type="file" name="file" id = 'up_img' multiple/> 
+        </div>
+        <div style="margin: 15px;">
+            <input type="submit" id="upload_btn" value = "Upload Image" class="btn_exp">
+        </div>
     </form>
 </div>
 {% endblock%}
