@@ -124,12 +124,14 @@ def get_detections_images(coordinates, no_page_detections):
     # showing the images
     pages_pointer = 0
     page_detections_pointer = 0
-    det_co[pages_pointer] = []
+    for i in range(len(page_name)):
+        det_co[i] = []
+    # det_co[pages_pointer] = []
     for i in range(len(coordinates)):
         if(page_detections_pointer == no_page_detections[pages_pointer]):
             pages_pointer += 1
             page_detections_pointer = 0
-            det_co[pages_pointer] = []
+            # det_co[pages_pointer] = []
                     
         # extracting the image
         x_1 = coordinates[i]['x_1']
