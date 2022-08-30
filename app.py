@@ -282,13 +282,18 @@ def upload_image():
             get_page_metadata()
             return redirect(url_for('metadata'))
         if 0 < up_count < len(files):
+            # add a warning that there is an issue with the files
+            # some of the files chosen might not be of the supported fromat
+            # jpeg, png, etc
             return redirect(request.url)
+
     return render_template('upload.html')
 
 @app.route('/metadata', methods=['POST', 'GET']) # metadata preview
 def metadata():
     img_to_cv()
     index_meta = 0 # keep track of current page
+
     if request.method == 'POST':
         meta_request = request.get_json() # getting request data
         index_meta = int(meta_request['index']) # passed index
@@ -300,15 +305,17 @@ def metadata():
             meta_data[index_meta]['page'] = meta_request['page']
         elif (meta_request['operation'] == 'ocr'):
             meta_data[index_meta]['ocr'] = ocrPage(images[index_meta])
+
+
     return render_template('meta_data.html', page_uri=page_uri, rng_img = range(len(page_name)), index_meta = index_meta, meta_data=meta_data, length = len(page_name))
 
 
 @app.route('/detections', methods=['GET', 'POST']) # detections preview
 def detections():
     global session
-    if session == 0: # to avoid redundancy, only at start of session
-        create_detections()
-        session = 1 #indicate session is already running
+    #if session == 0: # to avoid redundancy, only at start of session
+    create_detections()
+        #session = 1 #indicate session is already running
     ndarray_to_b64(result_cv) # encoding images to be passed to html
     if request.method == 'POST':
         request_data = request.get_json()
@@ -324,6 +331,7 @@ def detections():
             result_meta[image_index]['obj']['caption'] = request_data['caption']     
         elif operation == 'ocr':
             result_meta[image_index]['obj']['ocr'] = ocrPage(result_cv[image_index]['obj'])
+
     return render_template('detections.html', pass_files=result_en, pass_meta=result_meta, pass_range = range(len(result_en)))
 
 
