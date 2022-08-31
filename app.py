@@ -227,7 +227,7 @@ def download_images():
             search_name = "%s*.%s" % (page.split('.')[0], page.split('.')[1]) # use wild card tokens to get all images of current session
             for file in glob(os.path.join(download_folder, search_name)):
                 zf.write(file, os.path.basename(file))
-            zf.write('page_2_elements_csv.csv', os.path.basename('page_2_elements_csv.csv'))
+        zf.write('page_2_elements_csv.csv', os.path.basename('page_2_elements_csv.csv'))
     stream.seek(0)
     return send_file(
         stream, 
@@ -260,6 +260,7 @@ def remove_image(image_index):
     del result_en[image_index]
     del result_meta[image_index]
     del result_cv[image_index]
+    del download_name[image_index]
     for i in range(image_index, len(result_en)):
         result_cv[i]["index"] -= 1
         result_en[i]["index"] -= 1
