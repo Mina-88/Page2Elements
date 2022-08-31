@@ -1,4 +1,6 @@
 // Metadata Page
+
+// takes page data from jinja2 and navigates to next page dynamically
 function next_page_meta(pages, meta_r)
 {
   var input = document.getElementById("pg_ind_meta");
@@ -22,19 +24,21 @@ function next_page_meta(pages, meta_r)
   }
 }
 
+// makes a post request to ocr current page using send_meta
 function ocr_op()
 {
   var ind = document.getElementById("pg_ind_meta").value;
   send_meta('ocr', ind);
 }
 
+// modifies current page metadata using a post request send_meta
 function change_meta()
 {
   var ind = document.getElementById("pg_ind_meta").value;
   send_meta('write', ind);
 }
 
-
+// takes page data from jinja2 and navigates to previous page dynamically
 function prev_page_meta(pages)
 {
   var input = document.getElementById("pg_ind_meta");
@@ -57,6 +61,7 @@ function prev_page_meta(pages)
   }
 }
 
+// takes operation and page index to create a corrosponding post request
 function send_meta(operation, index_meta) {
   if (operation === 'write') {
     data = $('#meta_input').serializeArray().reduce(function(obj, item) { obj[item.name] = item.value; return obj}, {}); // Form data to a key-value form
@@ -75,6 +80,7 @@ function send_meta(operation, index_meta) {
     document.write(response); document.close();}});
 }  
 
+// shows the form to modify metadata
 function insert_meta() {
   reset_meta();
   var input = document.getElementById("meta_input");
@@ -82,6 +88,7 @@ function insert_meta() {
   input.removeAttribute("hidden");
 }
 
+// resets metadata of the page
 function reset_meta() {
   var input = document.getElementById("meta_input");
   input.reset();
@@ -89,26 +96,32 @@ function reset_meta() {
 }
 
 // Detections Page
+
+// takes image index and sends post request to remove the image from backend lists 
 function remove_image(index) {
   send_det_data('remove_image', index);
   hide_input(index);
 }
 
+// takes image index and removes caption attribute from image metadata
 function remove_caption(index) {
   send_det_data('remove_caption', index);
   hide_input(index);
 }
 
+// takes image index and sends post request to generate automatic captions in the backend
 function generate_caption(index) {
   send_det_data('generate_caption', index);
   hide_input(index);
 }
 
+// takes image index and resets the manual captions input
 function reset_input(index) {
   var input = document.getElementById("cap_in_" + index);
   input.value = "";
 }
 
+// takes the image index and shows the form to input manual captions
 function view_input(index) {
   var input = document.getElementById("cap_in_div_" + index);
   input.setAttribute("hidden", "false");
@@ -116,20 +129,24 @@ function view_input(index) {
   reset_input(index);
 }
 
+// takes the image index and hides the form of manual caption data
 function hide_input(index) {
   var input = document.getElementById("cap_in_div_" + index);
   input.setAttribute("hidden", "true")
   reset_input(index);
 }
 
+// takes image index to prompt a post request  
 function manual_caption(index) {
   send_det_data('manual_caption', index);
 }
 
+// takes image index and prompts a post request to ocr the image, using send_det_data
 function ocr_detection(index) {
   send_det_data('ocr', index);
 }
 
+// takes the operation and image index to create a post request with corrosponding data
 function send_det_data(operation, index) {
   var temp_json = {};
   if (operation !== 'manual_caption') {
@@ -155,10 +172,13 @@ function send_det_data(operation, index) {
 
 
 // Manual Detections Page
+
+// get the reference of the selection rectangle div
 function getSelectionRectNode() {
     return document.getElementById("crop-rect");
 }
 
+// takes the coordinates and modifies a div to be drawn as the selection rectangle
 function showSelectionRectangle(selection) {
     var rect = getSelectionRectNode();
     var img = document.getElementById("img_man")
@@ -173,6 +193,7 @@ function showSelectionRectangle(selection) {
     rect.style.opacity = 0.5;
 }
 
+// takes the coordinates of the selection and create a div seperately appended to the html
 function appendSelectionRectangle(selection) {
     var rect_div = document.createElement("div");
     var reference = document.getElementById("manual_detection_div").getBoundingClientRect()
@@ -192,6 +213,7 @@ function appendSelectionRectangle(selection) {
     document.querySelector("#manual_detection_div").appendChild(rect_div);
 }
 
+// to hide and reset the temporary selection rectangle
 function resetSelectionRectangle() {
     var rect = getSelectionRectNode();
     rect.style.left = 0;
@@ -201,6 +223,7 @@ function resetSelectionRectangle() {
     rect.style.opacity = 0;
 }
 
+// initiallizes event handlers and capture required coordinates 
 function initEventHandlers() {
     var isMouseDown = false;
     var selectionRectangle = {
@@ -260,11 +283,13 @@ function initEventHandlers() {
     document.getElementById("manual_detection_div").addEventListener("mouseup", onMouseUp);
 }
 
+// initiallizes manual selection with event listeners
 function init() 
 {
     initEventHandlers();
 }
-  
+ 
+// takes the pages data from jinja2 and navigate to next page dynamically
 function next_page_man(pages)
 {
   // var div_sel = document.querySelectorAll(".div_sel");
@@ -287,6 +312,7 @@ function next_page_man(pages)
   send_man_data('navigate', curr_index);
 }
 
+// takes the pages data from jinja2 and navigates the pages dynamically
 function prev_page_man(pages)
 {
   var input = document.getElementById("pg_ind");
@@ -307,13 +333,14 @@ function prev_page_man(pages)
   send_man_data('navigate', curr_index);
 }
 
+// resets unconfirmed manual detections
 function reset_man()
 {
   var div_sel = document.querySelectorAll(".div_sel");
   div_sel.forEach(sel => { sel.remove()  });
 }
 
-
+// takes the operation, the selections, the index of upcoming page, and current index && generates an array with the data of current manual detections
 function man_array(operation, selections, index, curr_index) {
   var js_sel = [];
   var temp_json = {};
@@ -326,6 +353,7 @@ function man_array(operation, selections, index, curr_index) {
   return js_sel;
 }
 
+// takes the operation, and the index of the page, and sends post request with corrosponding data
 function send_man_data(operation, curr_index) {
   var selections = document.querySelectorAll(".div_sel");
   var index = document.getElementById("pg_ind").getAttribute("value");
@@ -350,18 +378,23 @@ function send_man_data(operation, curr_index) {
 }   
 
 // General Functions
+
+// redirects to download page
 function down_red() {
   window.location.href = "/download";
 }
 
+// redirects to manual detections page
 function man_red() {
   window.location.href = "/manual_detections"
 }
 
+// redirects to automatics detections page
 function det_red() {
   window.location.href = "/detections";
 }
 
+// redirects to home/upload page
 function up_red() {
   window.location.href = "/";
 }

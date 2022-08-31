@@ -173,6 +173,7 @@ def create_detections():
     get_detections_images(coordinates, page_detections)
     # now we have the results in result_cv
 
+# takes a numpy array of image data and converts it to b64 to be displayed in html
 def ndarray_to_b64(ndarray):
     result_en.clear() # eleminate redundancy
     for i in ndarray:
@@ -180,11 +181,13 @@ def ndarray_to_b64(ndarray):
         im_en = base64.b64encode(buffer).decode('utf-8') # encoding to b64 to be displayed in html
         result_en.append({"page": i['page'], "obj":im_en, "index":i['index']}) # objects to be passed to html using jinja2
 
+# generates the download names, considering name duplication for images from the same page
 def generate_download_name():
     for i in range(len(result_cv)):
         split_name = download_name[i]['obj'].split('.') # splitting the name and the extension
         download_name[i]['obj'] = split_name[0] + '_' + str(download_name[i]['index']) + '.' + split_name[1] # creating duplicate names
 
+# saves the images in the download directory of the server
 def save_ndImages():
     generate_download_name()
     os.chdir(download_folder) # changing currrent directory to the download folder[variable]
@@ -199,6 +202,7 @@ def getImgCap(image):
     # 3 captions for each image are created
     # They are in the form of a list
 
+# resets the server from upload and download data
 def reset_server():
     if os.path.exists(UPLOAD_FOLDER):
         shutil.rmtree(UPLOAD_FOLDER)
@@ -206,7 +210,8 @@ def reset_server():
         shutil.rmtree(download_folder)
     os.makedirs(UPLOAD_FOLDER)
     os.makedirs(download_folder)
-    
+
+# prepares the images and the csv file and send them to the user to be downloaded 
 def download_images():
     save_ndImages()
     csv_exp = []
@@ -230,6 +235,7 @@ def download_images():
         attachment_filename='P2E_images_csv.zip'
     ) # sending the file to be downloaded
 
+# prepare the json file and send it to the user to be downloaded
 def download_json():
     for i in range(len(result_cv)):
         tmp_dict = {} # create a dictionary similar to json
@@ -248,6 +254,7 @@ def download_json():
         outfile.write(download_json) # saving json
     return send_from_directory(download_folder, json_download_name, as_attachment=True) # send file to downloads
 
+# takes the index of the image to be removed and removes it from all lists and update the lists accordingly
 def remove_image(image_index):
     del det_co[result_en[image_index]['page']][result_en[image_index]['index']]
     del result_en[image_index]
@@ -266,6 +273,7 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), "server", "static", "uploads")
 download_folder = os.path.join(os.getcwd(), "server", "static", "downloads")
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# helper function to ensure the extension is allowed
 def allowed_file(filename): # to avoid unallowed extensions
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -329,9 +337,9 @@ def metadata():
 @app.route('/detections', methods=['GET', 'POST']) # detections preview
 def detections():
     global session
-    #if session == 0: # to avoid redundancy, only at start of session
-    create_detections()
-        #session = 1 #indicate session is already running
+    if session == 0: # to avoid redundancy, only at start of session
+        create_detections()
+        session = 1 #indicate session is already running
     ndarray_to_b64(result_cv) # encoding images to be passed to html
     if request.method == 'POST':
         request_data = request.get_json()
