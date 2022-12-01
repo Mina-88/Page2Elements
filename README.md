@@ -6,8 +6,7 @@ But, That is not all what we are thinking of. After solving the aforementioned m
 
 
 ## technologies used
-Layout-parser
-Easy ocr
+Layout-parser | Easy ocr
 
 ## Contributors
 * [Mina Mikhael](https://www.linkedin.com/in/minawmikhael/)
