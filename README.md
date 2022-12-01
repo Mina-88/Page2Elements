@@ -4,18 +4,10 @@ It is an attempt to extract images  with their description from old arabic magaz
 
 But, That is not all what we are thinking of. After solving the aforementioned main problem, we aim to train different models(or use pretrained ones) to extract infromation from different kinds of documents. Then similar documents will be clustered in order for the model to be choosen automatically according to the document type.
 
-## What we finished
-* Creating the blog for posting updates and the github repository
-
-## Current tasks
-* researching
-* testing pre trained models
-
-## Project backlog
-
 
 ## technologies used
 Layout-parser
+Easy ocr
 
 ## Contributors
 * [Mina Mikhael](https://www.linkedin.com/in/minawmikhael/)
